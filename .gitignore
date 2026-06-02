@@ -1,0 +1,5 @@
+.DS_Store
+docs/superpowers/
+*.pre-stow
+# machine-local overrides, e.g. .zshrc.local
+*.local
