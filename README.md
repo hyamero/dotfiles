@@ -7,7 +7,8 @@ Each top-level package dir mirrors `$HOME`; stow symlinks its contents into plac
 | -------- | --------------------------------------------- |
 | `zsh`    | `.zshrc`, `.zprofile`                         |
 | `git`    | `.gitconfig`, `.config/git/ignore`            |
-| `claude` | `.claude/settings.json`, `.claude/skills/`    |
+| `claude` | `.claude/settings.json`                       |
+| `agents` | `.agents/skills/`, `.agents/.skill-lock.json` |
 
 ## Fresh machine
 
