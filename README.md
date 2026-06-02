@@ -19,7 +19,8 @@ cd dotfiles
 ```
 
 Installs Homebrew (if missing), runs `brew bundle`, backs up any conflicting
-real files to `*.pre-stow`, and stows all packages.
+real files to `*.pre-stow`, stows all packages, and creates the
+`~/.claude/skills` links on first run.
 
 ## Daily use
 
