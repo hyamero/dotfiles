@@ -19,8 +19,14 @@ cd dotfiles
 ```
 
 Installs Homebrew (if missing), runs `brew bundle`, backs up any conflicting
-real files to `*.pre-stow`, stows all packages, and creates the
-`~/.claude/skills` links on first run.
+real files to `*.pre-stow`, stows all packages, creates the `~/.claude/skills`
+links on first run, and reinstalls the Claude plugins listed in
+`settings.json` (if the `claude` CLI is present).
+
+> Plugins themselves aren't tracked — only the enabled list in
+> `settings.json`. `install.sh` reinstalls them from the built-in
+> `claude-plugins-official` marketplace. Run it again after installing Claude
+> Code if the CLI wasn't available the first time.
 
 ## Daily use
 

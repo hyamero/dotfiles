@@ -47,4 +47,19 @@ if [ ! -d "$HOME/.claude/skills" ]; then
   shopt -u nullglob
 fi
 
+# 5. Claude plugins: enabledPlugins in settings.json only TOGGLES plugins, it
+#    doesn't fetch them — so install each enabled one into the cache. The list
+#    is read from the tracked settings.json so it never drifts. The
+#    claude-plugins-official marketplace is built-in, no registration needed.
+#    Skipped (with a note) if the claude CLI isn't installed yet.
+if command -v claude >/dev/null 2>&1; then
+  grep -oE '"[^"]+@[^"]+"[[:space:]]*:[[:space:]]*true' "$HOME/.claude/settings.json" \
+    | sed -E 's/^"([^"]+)".*/\1/' \
+    | while IFS= read -r plugin; do
+        claude plugin install "$plugin" --scope user || echo "warning: failed to install $plugin"
+      done
+else
+  echo "note: claude CLI not found — skipping plugin install. Re-run this script after installing Claude Code to restore plugins."
+fi
+
 echo "done. open a new shell to pick up zsh config."
