@@ -17,10 +17,11 @@ into place. See README.md for usage.
   directory symlink (e.g. `~/.agents/skills`) are real files reached *through*
   the link; a naive `[ -e ] && [ ! -L ]` backup renames repo files. The
   `! [ "$target" -ef <repo file> ]` check skips already-stowed paths.
-- **Claude plugins:** only the `enabledPlugins` list in `settings.json` is
-  tracked, not the plugin code. install.sh reinstalls them
-  (`claude plugin install <name>@claude-plugins-official`); the marketplace is
-  built-in.
+- **Claude plugins:** `claude-plugins.list` (generated from
+  `~/.claude/plugins/installed_plugins.json`) is the tracked restore list;
+  install.sh reinstalls from it. Do NOT read `settings.json`'s `enabledPlugins`
+  — Claude Code auto-manages and prunes it, so it's unreliable. The
+  `claude-plugins-official` marketplace is built-in.
 
 ## Workflow (this repo only)
 

@@ -34,6 +34,7 @@ dotfiles/
 ├── CLAUDE.md             # repo gotchas + workflow (for Claude Code)
 ├── .gitignore
 ├── Brewfile              # generated via `brew bundle dump`
+├── claude-plugins.list   # generated; plugins install.sh reinstalls
 ├── install.sh            # bootstrap: homebrew → brew bundle → stow → glue → plugins
 ├── zsh/
 │   ├── .zshrc
@@ -69,8 +70,8 @@ cd ~/Documents/Projects/personal/dotfiles
    **stows** every package (with `-t "$HOME"`).
 4. Creates the `~/.claude/skills` glue links on first run (see
    [What's tracked vs. not](#whats-tracked-vs-not)).
-5. Reinstalls the Claude plugins listed in `settings.json` — if the `claude` CLI
-   is present. Re-run after installing Claude Code if it wasn't.
+5. Reinstalls the Claude plugins listed in `claude-plugins.list` — if the
+   `claude` CLI is present. Re-run after installing Claude Code if it wasn't.
 
 ### Verify
 
@@ -105,6 +106,18 @@ brew bundle dump --file=Brewfile --force --no-vscode
 VS Code extensions are intentionally excluded (synced via VS Code Settings
 Sync) — `--no-vscode` keeps them out.
 
+### Refresh the plugin list
+
+After adding or removing Claude plugins, regenerate `claude-plugins.list` from
+the authoritative installed set (same idea as `brew bundle dump`):
+
+```sh
+{ echo "# Claude plugins to reinstall on a fresh machine."
+  echo "# Generated from ~/.claude/plugins/installed_plugins.json — see README (Refresh the plugin list)."
+  python3 -c 'import json; print("\n".join(sorted(json.load(open(__import__("os").path.expanduser("~/.claude/plugins/installed_plugins.json")))["plugins"])))'
+} > claude-plugins.list
+```
+
 ## What's tracked vs. not
 
 **The skills glue.** `~/.claude/skills` is *not* tracked — it's a directory of
@@ -113,9 +126,12 @@ only resolve from `$HOME`. The real skill content lives in `~/.agents/skills`
 and is tracked via the `agents` package; `install.sh` regenerates the glue links
 on a fresh machine.
 
-**Plugins.** Only the `enabledPlugins` list in `settings.json` is tracked, not
-the plugin code. `install.sh` reinstalls them from the built-in
-`claude-plugins-official` marketplace.
+**Plugins.** The plugin *code* isn't tracked — only `claude-plugins.list`, a
+generated manifest of which plugins to reinstall (from the built-in
+`claude-plugins-official` marketplace). We don't rely on `settings.json`'s
+`enabledPlugins` for this: Claude Code auto-manages that field and prunes it, so
+it's an unreliable restore source. Regenerate the list with the command above
+after changing your plugins.
 
 **Deliberately excluded:**
 

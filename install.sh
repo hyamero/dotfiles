@@ -47,17 +47,18 @@ if [ ! -d "$HOME/.claude/skills" ]; then
   shopt -u nullglob
 fi
 
-# 5. Claude plugins: enabledPlugins in settings.json only TOGGLES plugins, it
-#    doesn't fetch them — so install each enabled one into the cache. The list
-#    is read from the tracked settings.json so it never drifts. The
-#    claude-plugins-official marketplace is built-in, no registration needed.
+# 5. Claude plugins: reinstall the tracked list. claude-plugins.list is
+#    generated from installed_plugins.json (see README) — we don't read
+#    settings.json's enabledPlugins, which Claude Code auto-manages and prunes.
+#    The claude-plugins-official marketplace is built-in, no registration needed.
 #    Skipped (with a note) if the claude CLI isn't installed yet.
 if command -v claude >/dev/null 2>&1; then
-  grep -oE '"[^"]+@[^"]+"[[:space:]]*:[[:space:]]*true' "$HOME/.claude/settings.json" \
-    | sed -E 's/^"([^"]+)".*/\1/' \
-    | while IFS= read -r plugin; do
-        claude plugin install "$plugin" --scope user || echo "warning: failed to install $plugin"
-      done
+  if [ -f "$DOTFILES_DIR/claude-plugins.list" ]; then
+    grep -vE '^[[:space:]]*(#|$)' "$DOTFILES_DIR/claude-plugins.list" \
+      | while IFS= read -r plugin; do
+          claude plugin install "$plugin" --scope user || echo "warning: failed to install $plugin"
+        done
+  fi
 else
   echo "note: claude CLI not found — skipping plugin install. Re-run this script after installing Claude Code to restore plugins."
 fi
