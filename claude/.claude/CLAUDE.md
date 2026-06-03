@@ -1,12 +1,10 @@
 # Git workflow
 
-- **Never commit or push directly to `dev` or `main`** — they are protected base branches.
+- **Ask once per session.** The first time I ask you to commit, push, or open a PR in a session, ask me first: **commit directly to the current branch**, or **branch out from it first**? When the current branch is `dev` or `main`, branching out is the recommended default — but I decide. Apply my answer for the rest of the session unless I say otherwise.
+- **Branching out:** create the new branch off the current branch — `feature/<name>` for features, `fix/<name>` for fixes.
+- **Already on a non-base branch** (not `dev`/`main`): that *is* the working branch — keep committing there.
 - **Base branch:** `dev` if the repo has one, otherwise `main`.
-- **Starting work:**
-  - On the base branch (`dev`/`main`) → create a new branch off it: `feature/<name>` for features, `fix/<name>` for fixes.
-  - Already on a non-base branch (anything that isn't `dev`/`main`) → that *is* the working branch; keep committing there, don't branch again.
-- **Integrating:** push the working branch and open a PR into the base branch. A PR is the only path into `dev`/`main`.
-- **PR descriptions:** concise — what changed and why, no filler.
+- **Prefer to integrate via a PR** rather than pushing directly to `dev`/`main`. PR descriptions: concise — what changed and why, no filler.
 
 # Commits
 
