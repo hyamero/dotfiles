@@ -43,5 +43,8 @@ stow -t "$HOME" --restow <package>
 ## Refresh Brewfile
 
 ```sh
-brew bundle dump --file=Brewfile --force
+brew bundle dump --file=Brewfile --force --no-vscode
 ```
+
+VS Code extensions are intentionally excluded (synced via VS Code Settings
+Sync) — `--no-vscode` keeps them out on refresh.
