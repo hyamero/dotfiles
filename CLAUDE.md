@@ -6,7 +6,7 @@ into place. See README.md for usage.
 
 ## Critical gotchas
 
-- **Repo is NOT under `$HOME`** (it's in `~/Documents/Projects/personal/dotfiles`).
+- **Repo is NOT under `$HOME`** (it's in `~/documents/projects/personal/dotfiles`).
   Every `stow` command MUST pass `-t "$HOME"`, e.g. `stow -t "$HOME" --restow claude`.
   Without it, stow targets the repo's parent dir.
 - **`~/.claude/skills` is untracked glue — never track it.** It's a real dir of

@@ -15,7 +15,7 @@ Where a target dir already exists and holds other apps' data (`~/.config`,
 `~/.claude/settings.json`), leaving everything else — caches, sessions, history
 — untouched and untracked.
 
-> **Note:** the repo lives at `~/Documents/Projects/personal/dotfiles`, not
+> **Note:** the repo lives at `~/documents/projects/personal/dotfiles`, not
 > directly under `$HOME`, so every `stow` command must pass `-t "$HOME"`.
 > `install.sh` and the snippets below already do.
 
@@ -57,8 +57,8 @@ dotfiles/
 ### Fresh machine
 
 ```sh
-git clone git@github.com:hyamero/dotfiles.git ~/Documents/Projects/personal/dotfiles
-cd ~/Documents/Projects/personal/dotfiles
+git clone git@github.com:hyamero/dotfiles.git ~/documents/projects/personal/dotfiles
+cd ~/documents/projects/personal/dotfiles
 ./install.sh
 ```
 
@@ -84,7 +84,7 @@ cd ~/Documents/Projects/personal/dotfiles
 `~/.zshrc` etc. are symlinks into this repo — edit them as usual, then:
 
 ```sh
-cd ~/Documents/Projects/personal/dotfiles
+cd ~/documents/projects/personal/dotfiles
 git add -A && git commit -m "..." && git push
 ```
 
@@ -93,7 +93,7 @@ git add -A && git commit -m "..." && git push
 Place the file in a package dir mirroring its `$HOME` path, then re-stow:
 
 ```sh
-cd ~/Documents/Projects/personal/dotfiles
+cd ~/documents/projects/personal/dotfiles
 stow -t "$HOME" --restow <package>
 ```
 
