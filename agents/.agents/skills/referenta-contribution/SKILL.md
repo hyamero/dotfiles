@@ -93,3 +93,10 @@ non-obvious *why*, never restate what the code already says (same as CLAUDE.md).
 1. Ask: "Is this in Linear?" → user says no.
 2. Offer to create a ticket; on approval, create REF-N in Linear with a clear
    title + concise description, then proceed from step 2 of the example above.
+
+## Related
+
+This is the author side of the workflow. For the release side — turning a merged
+Release Candidate's commits into user-facing release notes — use the
+`referenta-release-notes` skill. (Note the inverse rule: release notes *strip*
+REF-N and ticket IDs, since the audience is end users.)
