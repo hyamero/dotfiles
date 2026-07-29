@@ -4,5 +4,6 @@ name = "rose-pine"
 auto_switch = false
 
 [keys]
-# Literal glyph, not "shift+;" — terminals don't reliably report Shift with punctuation.
-prefix = ":"
+# Chord, not a printable char: a ':' prefix eats ':w' in vim (-> workspace_picker),
+# and 'esc' eats esc+hjkl (-> focus_pane_*). ctrl+space transmits as NUL.
+prefix = "ctrl+space"
