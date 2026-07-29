@@ -1,8 +1,8 @@
 # dotfiles
 
 GNU Stow–managed macOS dotfiles. Each top-level dir (`zsh/`, `git/`, `claude/`,
-`agents/`) is a stow *package* mirroring `$HOME`; stow symlinks its contents
-into place. See README.md for usage.
+`agents/`, `herdr/`) is a stow *package* mirroring `$HOME`; stow symlinks its
+contents into place. See README.md for usage.
 
 ## Critical gotchas
 
@@ -17,6 +17,12 @@ into place. See README.md for usage.
   directory symlink (e.g. `~/.agents/skills`) are real files reached *through*
   the link; a naive `[ -e ] && [ ! -L ]` backup renames repo files. The
   `! [ "$target" -ef <repo file> ]` check skips already-stowed paths.
+- **Herdr rewrites its own `config.toml`** (theme picker, onboarding flag), so a
+  write that replaces the file rather than editing in place would drop the stow
+  symlink. After changing herdr settings in the TUI, `ls -la
+  ~/.config/herdr/config.toml` should still be a symlink; if it's a real file,
+  move it back into `herdr/.config/herdr/` and `stow -t "$HOME" --restow herdr`.
+  Only `config.toml` is tracked — logs, sockets, and `session.json` stay local.
 - **Claude plugins:** `claude-plugins.list` (generated from
   `~/.claude/plugins/installed_plugins.json`) is the tracked restore list;
   install.sh reinstalls from it. Do NOT read `settings.json`'s `enabledPlugins`
