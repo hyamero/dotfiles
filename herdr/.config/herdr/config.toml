@@ -2,3 +2,7 @@ onboarding = false
 [theme]
 name = "rose-pine"
 auto_switch = false
+
+[keys]
+# Literal glyph, not "shift+;" — terminals don't reliably report Shift with punctuation.
+prefix = ":"
