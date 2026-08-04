@@ -106,14 +106,9 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # pnpm
-export PNPM_HOME="/Users/hyamero/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+# pnpm end
 
 # bun completions
 [ -s "/Users/hyamero/.bun/_bun" ] && source "/Users/hyamero/.bun/_bun"
@@ -124,3 +119,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 . "$HOME/.turso/env"
 export PATH="$HOME/.local/bin:$PATH"
+
+# Use nvm's default Node (24.x) so corepack's pnpm shim is on PATH ahead of the
+# stale standalone pnpm. Must run after all PATH edits above.
+nvm use default --silent 2>/dev/null
