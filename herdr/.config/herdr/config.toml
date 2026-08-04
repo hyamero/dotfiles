@@ -4,6 +4,7 @@ name = "rose-pine"
 auto_switch = false
 
 [keys]
-# Chord, not a printable char: a ':' prefix eats ':w' in vim (-> workspace_picker),
-# and 'esc' eats esc+hjkl (-> focus_pane_*). ctrl+space transmits as NUL.
-prefix = "ctrl+space"
+# Dedicated ISO key left of '1', never typed in code, so it avoids what ruled out
+# ':' (eats ':w' in vim -> workspace_picker) and 'esc' (eats esc+hjkl -> focus_pane_*).
+# Must stay unshifted: shift+§ emits '±', a distinct char, so "shift+§" never matches.
+prefix = "§"
