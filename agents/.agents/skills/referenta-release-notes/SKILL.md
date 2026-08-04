@@ -1,12 +1,12 @@
 ---
 name: referenta-release-notes
-description: Use when asked to write or update release notes for a Referenta Release Candidate — e.g. "Update Release Candidate: v3.2.0#1048 description", or any request to turn an RC pull request's commits into user-facing release notes in the Referenta/referenta repo. Triggers on "Release Candidate", "release notes", an RC PR number or title, or a vX.Y.Z#NNNN reference.
+description: Use when asked to write or update release notes for a Referenta Release Candidate, e.g. "Update Release Candidate: v3.2.0#1048 description", or any request to turn an RC pull request's commits into user-facing release notes in the Referenta/referenta repo. Triggers on "Release Candidate", "release notes", an RC PR number or title, or a vX.Y.Z#NNNN reference.
 ---
 
 # Referenta release notes
 
 Turn a Release Candidate pull request into **user-facing release notes** and write
-them into the PR description. The audience is end users, not developers — so the
+them into the PR description. The audience is end users, not developers, so the
 notes describe what changed *for them*, never how it was built.
 
 **Trigger:** the user says something like *"Update Release Candidate: vX.Y.Z#NNNN
@@ -15,7 +15,7 @@ Repo is always `Referenta/referenta`.
 
 ## Tooling
 
-There is no GitHub MCP connected in this setup — use the **`gh` CLI** (already
+There is no GitHub MCP connected in this setup, so use the **`gh` CLI** (already
 authenticated). If a GitHub MCP server is connected in a future session, its PR
 read/edit tools are equivalent; prefer whichever is available.
 
@@ -64,34 +64,42 @@ The internal catch-all line, verbatim:
 
 ### 4. Write the notes
 
-Match the format of the reference PR **#1048** (the canonical example). Tone:
-user-facing, concise, professional. No commit hashes, ticket IDs (REF-N), branch
-names, or internal jargon.
+Follow the structure of the reference PR **#1048**, with the two style rules
+below applied. Tone: user-facing, concise, professional. No commit hashes, ticket
+IDs (REF-N), branch names, or internal jargon.
 
 **Bilingual, German first, then English**, separated by a `---`. The English
 section mirrors the German one section-for-section.
 
+**Never use em or en dashes (`—`, `–`)** anywhere in the notes, including inside
+prose. Use a colon to lead into a heading tagline or a bullet's explanation, and
+commas, semicolons, or parentheses mid-sentence. #1048 predates this rule and is
+full of them, so copy its structure, not its punctuation.
+
+**Don't open with a formulaic framing line.** Never write `Das Highlight von
+vX.Y.Z: …` or `The headline of vX.Y.Z: …`. State what the feature does in a plain
+sentence and let it stand on its own; the version number is already in the PR
+title.
+
 Within each language:
 
-1. `### <Headline feature> — <short tagline>` for the release's main feature,
-   followed by one framing sentence:
-   - DE: `Das Highlight von vX.Y.Z: …`
-   - EN: `The headline of vX.Y.Z: …`
-   Then bold-lead sub-bullets: `- **<capability>** — <what it does for the user>`.
+1. `### <Headline feature>: <short tagline>` for the release's main feature,
+   followed by one plain framing sentence, then bold-lead sub-bullets:
+   `- **<capability>:** <what it does for the user>`.
 2. Additional `### <themed section>` headings for other notable features.
-3. A final small-stuff section — `### Feinschliff & Fehlerbehebungen` /
-   `### Polish & fixes` — listing visible fixes, with the **internal catch-all
+3. A final small-stuff section (`### Feinschliff & Fehlerbehebungen` /
+   `### Polish & fixes`) listing visible fixes, with the **internal catch-all
    line as its last bullet**.
 
 Skeleton:
 
 ```markdown
-### <Headline> — <tagline>
+### <Headline>: <tagline>
 
-Das Highlight von vX.Y.Z: <one sentence>.
+<One plain sentence saying what the feature does.>
 
-- **<capability>** — <user benefit>.
-- **<capability>** — <user benefit>.
+- **<capability>:** <user benefit>.
+- **<capability>:** <user benefit>.
 
 ### <Themed feature>
 
@@ -104,12 +112,12 @@ Das Highlight von vX.Y.Z: <one sentence>.
 
 ---
 
-### <Headline> — <tagline>
+### <Headline>: <tagline>
 
-The headline of vX.Y.Z: <one sentence>.
+<One plain sentence saying what the feature does.>
 
-- **<capability>** — <user benefit>.
-- **<capability>** — <user benefit>.
+- **<capability>:** <user benefit>.
+- **<capability>:** <user benefit>.
 
 ### <Themed feature>
 
@@ -136,12 +144,15 @@ confirm before writing it.
 
 ## Reference
 
-PR #1048 (`Release Candidate: v3.2.0`) is the canonical format and tone example —
-read its description before drafting if unsure.
+PR #1048 (`Release Candidate: v3.2.0`) is the reference for section structure and
+tone; read its description before drafting if unsure. Its punctuation is out of
+date: it uses em dashes throughout and opens with the `Das Highlight von …` /
+`The headline of …` formula, both of which are now forbidden. Take the shape from
+it, not the wording.
 
 ## Related
 
-This is the release side of the workflow — the counterpart to the
+This is the release side of the workflow, the counterpart to the
 `referenta-contribution` skill, which covers the author side (ticket → branch →
 commit → PR, tagging REF-N throughout). Release notes do the inverse: strip REF-N
 and ticket IDs and write for end users.
