@@ -1,5 +1,6 @@
 .DS_Store
 docs/superpowers/
 *.pre-stow
+*.bak
 # machine-local overrides, e.g. .zshrc.local
 *.local
