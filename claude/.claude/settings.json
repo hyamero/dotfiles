@@ -7,6 +7,134 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/hyamero/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-hook.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "supabase@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
@@ -17,6 +145,45 @@
     "security-guidance@claude-plugins-official": true
   },
   "effortLevel": "xhigh",
+  "skipWorkflowUsageWarning": true,
   "theme": "dark",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi"
+  },
+  "skillOverrides": {
+    "agents-sdk": "off",
+    "apple-design": "off",
+    "caveman-review": "off",
+    "cloudflare": "off",
+    "cloudflare-email-service": "off",
+    "cloudflare-one": "off",
+    "cloudflare-one-migrations": "off",
+    "codebase-design": "off",
+    "diagnosing-bugs": "off",
+    "durable-objects": "off",
+    "handoff": "off",
+    "implement": "off",
+    "improve-animations": "off",
+    "review-animations": "off",
+    "sandbox-sdk": "off",
+    "tdd": "off",
+    "teach": "off",
+    "to-spec": "off",
+    "to-tickets": "off",
+    "triage": "off",
+    "turnstile-spin": "off",
+    "vercel-react-native-skills": "off",
+    "vercel-react-view-transitions": "off",
+    "wayfinder": "off",
+    "web-design-guidelines": "off",
+    "web-perf": "off",
+    "writing-great-skills": "off"
+  }
 }
