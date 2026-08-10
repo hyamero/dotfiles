@@ -8,3 +8,11 @@ auto_switch = false
 # ':' (eats ':w' in vim -> workspace_picker) and 'esc' (eats esc+hjkl -> focus_pane_*).
 # Must stay unshifted: shift+§ emits '±', a distinct char, so "shift+§" never matches.
 prefix = "§"
+
+[ui]
+agent_panel_sort = "spaces"
+
+# Lets agents ping via `herdr notification show`; defaults to "off", which
+# makes that call a silent no-op.
+[ui.toast]
+delivery = "system"
