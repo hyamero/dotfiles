@@ -55,8 +55,9 @@ stdout; `pane read` emits plain text. **Every wait is indefinite without
 
 Dev servers, watchers, builds, and tails belong in a pane I can see:
 
-1. `herdr pane split --current --direction down --ratio 0.3 --cwd <path> --no-focus`
-   — returns JSON containing the new `pane_id`.
+1. `herdr pane split --current --direction right --ratio 0.4 --cwd <path> --no-focus`
+   — a pane on the **right**, not the bottom. Returns JSON containing the new
+   `pane_id`.
 2. `herdr pane run <pane_id> '<command>'`
 3. `herdr pane wait-output <pane_id> --match "<token>" --timeout 30000`
 4. `herdr pane read <pane_id> --source visible --lines 40` to inspect.
