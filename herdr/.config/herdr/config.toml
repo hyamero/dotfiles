@@ -11,6 +11,7 @@ prefix = "§"
 
 [ui]
 agent_panel_sort = "spaces"
+show_agent_labels_on_pane_borders = true
 
 # Lets agents ping via `herdr notification show`; defaults to "off", which
 # makes that call a silent no-op.
