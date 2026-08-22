@@ -7,6 +7,35 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "skillOverrides": {
+    "agents-sdk": "off",
+    "apple-design": "off",
+    "caveman-review": "off",
+    "cloudflare": "off",
+    "cloudflare-email-service": "off",
+    "cloudflare-one": "off",
+    "cloudflare-one-migrations": "off",
+    "codebase-design": "off",
+    "diagnosing-bugs": "off",
+    "durable-objects": "off",
+    "handoff": "off",
+    "implement": "off",
+    "improve-animations": "off",
+    "review-animations": "off",
+    "sandbox-sdk": "off",
+    "tdd": "off",
+    "teach": "off",
+    "to-spec": "off",
+    "to-tickets": "off",
+    "triage": "off",
+    "turnstile-spin": "off",
+    "vercel-react-native-skills": "off",
+    "vercel-react-view-transitions": "off",
+    "wayfinder": "off",
+    "web-design-guidelines": "off",
+    "web-perf": "off",
+    "writing-great-skills": "off"
+  },
   "hooks": {
     "SessionStart": [
       {
@@ -135,6 +164,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "\"$HOME/.claude/statusline.sh\""
+  },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": false,
     "commit-commands@claude-plugins-official": false,
@@ -154,46 +187,13 @@
     "skill-creator@claude-plugins-official": false,
     "typescript-lsp@claude-plugins-official": false
   },
-  "effortLevel": "xhigh",
-  "skipWorkflowUsageWarning": true,
-  "theme": "dark",
-  "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
+  "effortLevel": "high",
   "voice": {
     "enabled": true,
     "mode": "hold"
   },
-  "statusLine": {
-    "type": "command",
-    "command": "if [ -f '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh' ] && [ -r '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh' ] && [ -x '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh' ]; then /bin/sh '/Users/hyamero/.orca/agent-hooks/claude-statusline.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi"
-  },
-  "skillOverrides": {
-    "agents-sdk": "off",
-    "apple-design": "off",
-    "caveman-review": "off",
-    "cloudflare": "off",
-    "cloudflare-email-service": "off",
-    "cloudflare-one": "off",
-    "cloudflare-one-migrations": "off",
-    "codebase-design": "off",
-    "diagnosing-bugs": "off",
-    "durable-objects": "off",
-    "handoff": "off",
-    "implement": "off",
-    "improve-animations": "off",
-    "review-animations": "off",
-    "sandbox-sdk": "off",
-    "tdd": "off",
-    "teach": "off",
-    "to-spec": "off",
-    "to-tickets": "off",
-    "triage": "off",
-    "turnstile-spin": "off",
-    "vercel-react-native-skills": "off",
-    "vercel-react-view-transitions": "off",
-    "wayfinder": "off",
-    "web-design-guidelines": "off",
-    "web-perf": "off",
-    "writing-great-skills": "off"
-  }
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark",
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true
 }
