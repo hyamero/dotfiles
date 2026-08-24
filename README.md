@@ -28,6 +28,7 @@ Where a target dir already exists and holds other apps' data (`~/.config`,
 | `claude` | `.claude/settings.json`, `.claude/CLAUDE.md`  |
 | `agents` | `.agents/skills/`, `.agents/.skill-lock.json` |
 | `herdr`  | `.config/herdr/config.toml`                   |
+| `ghostty`| `.config/ghostty/config`, `.config/ghostty/shaders/` |
 
 ```
 dotfiles/
@@ -51,8 +52,12 @@ dotfiles/
 │   └── .agents/
 │       ├── .skill-lock.json
 │       └── skills/        # 23 skills — the real content
-└── herdr/
-    └── .config/herdr/config.toml
+├── herdr/
+│   └── .config/herdr/config.toml
+└── ghostty/
+    └── .config/ghostty/
+        ├── config
+        └── shaders/          # custom-shader GLSL passes
 ```
 
 ## Setup

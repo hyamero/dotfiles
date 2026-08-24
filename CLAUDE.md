@@ -23,6 +23,15 @@ contents into place. See README.md for usage.
   ~/.config/herdr/config.toml` should still be a symlink; if it's a real file,
   move it back into `herdr/.config/herdr/` and `stow -t "$HOME" --restow herdr`.
   Only `config.toml` is tracked — logs, sockets, and `session.json` stay local.
+- **Ghostty config lives at `.config/ghostty`, not Application Support.** macOS
+  Ghostty reads `~/Library/Application Support/com.mitchellh.ghostty/config`
+  too, and a file there wins over the XDG path — so that copy is parked as
+  `config.pre-stow`. If shader changes stop taking effect, check nothing has
+  recreated a real `config` there (`ghostty +show-config | grep custom-shader`
+  prints the paths actually in use). `custom-shader` values are relative to the
+  config file, so `shaders/*.glsl` resolves through the stow symlink into the
+  repo. Reload in-place with `⌘R`; `ghostty +validate-config` checks syntax but
+  does NOT compile the GLSL — a broken shader fails silently at load.
 - **Claude plugins:** `claude-plugins.list` (generated from
   `~/.claude/plugins/installed_plugins.json`) is the tracked restore list;
   install.sh reinstalls from it. Do NOT read `settings.json`'s `enabledPlugins`

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(zsh git claude agents herdr)
+PACKAGES=(zsh git claude agents herdr ghostty)
 
 # 1. Homebrew (Apple Silicon path)
 if ! command -v brew >/dev/null 2>&1; then
