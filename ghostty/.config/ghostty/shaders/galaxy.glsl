@@ -5,17 +5,33 @@
 // wherever a pixel is bright enough to be a glyph or the cursor. Tune the knobs
 // below; everything else is shape, not intensity.
 
-#define NEBULA_STRENGTH 0.28   // peak glow added to the background
-#define CLOUD_COVERAGE  0.18   // lower = cloud confined to fewer, smaller patches
-#define FILAMENT_DEPTH  0.90   // how hard the fine layer breaks up flat areas
-#define STAR_STRENGTH   0.42   // brightness of the sparse stars
-#define STAR_RARITY     0.955  // higher = fewer stars (fraction of cells rejected)
-#define CENTER_GLOW     0.20   // how much nebula survives mid-screen (0 = none)
-#define EDGE_BAND       0.30   // width of the glowing border, in units of screen height
+#define NEBULA_STRENGTH 0.22   // peak glow added to the background
+#define CLOUD_COVERAGE  0.26   // HIGHER = fewer, smaller patches (it is a threshold)
+#define FILAMENT_DEPTH  0.50   // how hard the fine layer breaks up flat areas
+#define HUE_VARIANCE    0.55   // how far separate patches drift apart in hue
+#define STAR_STRENGTH   0.30   // brightness of the sparse stars
+#define STAR_RARITY     0.972  // higher = fewer stars (fraction of cells rejected)
+#define CENTER_GLOW     0.08   // ambient floor everywhere outside the shape
+
+// Composition: a C hugging the left edge, tips curling toward the centre, plus a
+// small accent bottom-right. Authored with y measured DOWNWARD from the top.
+#define C_CENTER_X      0.46   // arc centre, as a fraction of width
+#define C_RADIUS_X      0.44   // half-width of the arc
+#define C_RADIUS_Y      0.40   // half-height of the arc
+#define C_THICK         0.40   // how soft/thick the arc band is
+#define C_OPEN          0.10   // taper of the C's opening on the right
+#define C_REACH         0.62   // how far right the cloud survives at all
+#define BR_X            0.88   // bottom-right accent, fraction of width
+#define BR_Y            0.82   // ... fraction of height, measured downward
+#define BR_SIZE         0.20   // accent radius
+#define BR_WEIGHT       0.55   // accent strength relative to the C
+
+// Set to 1 if the bottom-right accent shows up in the TOP right instead.
+#define FLIP_Y          0
 #define VOID_DEPTH      0.50   // how far the empty regions darken the background
 #define CENTER_SHADE    0.50   // black tint over the middle, for legibility
-#define DRIFT_SPEED     0.012  // how fast the clouds churn
-#define BASE_TINT vec3(0.008, 0.003, 0.018)  // barely-there wash; keep low for deep blacks
+#define DRIFT_SPEED     0.009  // how fast the clouds churn
+#define BASE_TINT vec3(0.005, 0.002, 0.012)  // barely-there wash; keep low for deep blacks
 
 float hash21(vec2 p) {
     p = fract(p * vec2(233.34, 851.73));
@@ -77,6 +93,35 @@ float stars(vec2 p) {
     return smoothstep(0.12, 0.0, d) * twinkle * mag;
 }
 
+// Where cloud is allowed to live, independent of the noise. Returns 0..1.
+float composition(vec2 uv, float aspect) {
+    float sy = 1.0 - uv.y;          // y down, 0 = top
+#if FLIP_Y
+    sy = uv.y;
+#endif
+    vec2 q = vec2(uv.x * aspect, sy);
+
+    // Elliptical arc: the bowl reaches the left edge while the tips land near
+    // the horizontal centre, which is what gives it the C.
+    vec2 c = vec2(C_CENTER_X * aspect, 0.5);
+    vec2 e = (q - c) / vec2(C_RADIUS_X * aspect, C_RADIUS_Y);
+    float ring = exp(-pow((length(e) - 1.0) / C_THICK, 2.0));
+
+    // Open the C by cutting away everything right of the centre, softly so the
+    // tips taper rather than ending flat.
+    float open = 1.0 - smoothstep(0.0, C_OPEN, (q.x - c.x) / aspect);
+
+    // Left bias, so the arc is densest at the edge and fades going inward.
+    float left = 1.0 - smoothstep(0.05, C_REACH, q.x / aspect);
+
+    float arc = ring * open * mix(0.35, 1.0, left);
+
+    vec2 b = (q - vec2(BR_X * aspect, BR_Y)) / (BR_SIZE * vec2(aspect, 1.0));
+    float accent = exp(-dot(b, b)) * BR_WEIGHT;
+
+    return clamp(arc + accent, 0.0, 1.0);
+}
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     vec2 p  = (uv - 0.5) * vec2(iResolution.x / iResolution.y, 1.0);
@@ -120,20 +165,31 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     density = clamp(density * (1.0 - FILAMENT_DEPTH * 0.5 + FILAMENT_DEPTH * detail),
                     0.0, 1.0);
 
-    // Frame the window: distance to the nearest edge, measured in units of screen
-    // height so the band is the same pixel thickness on all four sides. A radial
-    // vignette can't do this — length(p) hits ~1.0 at the left and right edges
-    // but only ~0.45 at top and bottom, so it reads as an ellipse, not a frame.
-    vec2 e = min(uv, 1.0 - uv);
-    e.x *= iResolution.x / iResolution.y;
-    float frame = 1.0 - smoothstep(0.03, EDGE_BAND, min(e.x, e.y));
+    // Placement is authored, not symmetric: see composition() above.
+    float frame = composition(uv, iResolution.x / iResolution.y);
     density *= CENTER_GLOW + (1.0 - CENTER_GLOW) * frame;
 
-    // Kept bright enough that density and NEBULA_STRENGTH are the only things
-    // scaling the result — a dark palette here is what made it invisible before.
-    vec3 violet = vec3(0.40, 0.16, 0.72);
-    vec3 orchid = vec3(0.66, 0.38, 0.92);
-    vec3 nebula = mix(violet, orchid, smoothstep(0.55, 1.0, density));
+    // Three stops, not two: cold thin gas at the fringes, violet through the
+    // body, hot rose in the cores. Kept bright enough that density and
+    // NEBULA_STRENGTH remain the only things scaling the result — a dark palette
+    // here is what made it invisible before. The old pair keyed its mix at
+    // density 0.55+, which almost never happens now, so it read as one flat hue.
+    vec3 abyss   = vec3(0.10, 0.10, 0.42);
+    vec3 violet  = vec3(0.40, 0.16, 0.72);
+    vec3 rose    = vec3(0.72, 0.34, 0.76);
+    vec3 nebula = mix(abyss, violet, smoothstep(0.02, 0.40, density));
+    nebula = mix(nebula, rose, smoothstep(0.74, 0.98, density));
+
+    // Second colour axis, independent of density: a coarse field pulls whole
+    // patches toward blue or rose, so two clouds of equal thickness are not the
+    // same colour. Expressed as per-channel gains around 1.0 rather than as
+    // colours, so it shifts hue without changing overall brightness.
+    float hueField = 0.7 * vnoise(p * 0.8 + vec2(-t * 0.4, t * 0.25) + seed * 4.7)
+                   + 0.3 * vnoise(p * 1.9 + vec2(t * 0.3, t * 0.5) + seed * 6.1);
+    vec3 cool = vec3(0.58, 0.78, 1.24);
+    vec3 warm = vec3(1.10, 0.80, 1.06);
+    vec3 gain = mix(cool, warm, smoothstep(0.32, 0.72, hueField));
+    nebula *= mix(vec3(1.0), gain, HUE_VARIANCE);
 
     vec3 glow = BASE_TINT;
     glow += nebula * density * NEBULA_STRENGTH;
