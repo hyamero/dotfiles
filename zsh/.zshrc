@@ -136,5 +136,14 @@ export PATH="$HOME/.local/bin:$PATH"
 # stale standalone pnpm. Must run after all PATH edits above.
 nvm use default --silent 2>/dev/null
 
+# WSL: a shell launched from the Windows side (`wsl` in PowerShell, an editor's
+# integrated terminal, a multiplexer whose server started there) inherits the
+# Windows cwd under /mnt/*, where every file op crosses the slow 9p bridge.
+# Start in $HOME instead. Interactive only, so `wsl -- <cmd>` still runs in the
+# directory it was invoked from.
+if [[ -o interactive && -n "$WSL_DISTRO_NAME" && "$PWD" == /mnt/* ]]; then
+  cd "$HOME"
+fi
+
 # Machine-local overrides (untracked, gitignored via *.local).
 [ -s "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
