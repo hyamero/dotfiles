@@ -1,12 +1,36 @@
 # dotfiles
 
-GNU Stow–managed macOS dotfiles. Each top-level dir (`zsh/`, `git/`, `claude/`,
-`agents/`, `herdr/`) is a stow *package* mirroring `$HOME`; stow symlinks its
-contents into place. See README.md for usage.
+GNU Stow–managed dotfiles, shared between a **Mac** and a **WSL (Ubuntu)** box.
+Each top-level dir (`zsh/`, `git/`, `claude/`, `agents/`, `herdr/`, `ghostty/`)
+is a stow *package* mirroring `$HOME`; stow symlinks its contents into place.
+See README.md for usage and the Cross-platform notes table.
 
 ## Critical gotchas
 
-- **Repo is NOT under `$HOME`** (it's in `~/documents/projects/personal/dotfiles`).
+- **Never commit an absolute `$HOME` path.** Two machines, two homes
+  (`/Users/hyamero` vs. `/home/hyamero`). Use `$HOME` in `settings.json` hook
+  commands, `~` in `.gitconfig`, `$HOME` in shell files. A hardcoded
+  `/Users/hyamero/...` silently breaks only on the other box — grep for it
+  before committing.
+- **Homebrew's prefix differs per platform** (`/opt/homebrew` vs.
+  `/home/linuxbrew/.linuxbrew`). `.zprofile`, `.zshrc` and `install.sh` each
+  probe for both; don't collapse them back to one path. `.zshrc` needs its own
+  probe because non-login shells never source `.zprofile`.
+- **Casks belong in `Brewfile.macos`, not `Brewfile`.** Linux brew has no cask
+  support and one `cask` line aborts the *entire* `brew bundle` run. Note that
+  `brew bundle dump` writes a single flat file — run it on the Mac and move the
+  cask lines back out afterwards. Linux also refuses untrusted third-party taps
+  until `brew trust <tap>` is run.
+- **`settings.json` hooks must tolerate a missing target.** `statusline.sh`,
+  herdr's `herdr-agent-state.sh` and the `.orca` hooks are all untracked,
+  machine-local files. Every hook referencing one is wrapped in
+  `[ -f … ] && … || true`; drop the guard and every session on the other machine
+  fires a failing hook.
+- **Per-machine git settings go in `~/.gitconfig.local`**, included from the
+  tracked `.gitconfig`. Credential helpers in particular embed an absolute `gh`
+  path, so they must never land in the tracked file.
+- **Repo is NOT under `$HOME`** (`~/documents/projects/personal/dotfiles` on the
+  Mac, `~/projects/personal/dotfiles` on WSL).
   Every `stow` command MUST pass `-t "$HOME"`, e.g. `stow -t "$HOME" --restow claude`.
   Without it, stow targets the repo's parent dir.
 - **`~/.claude/skills` is untracked glue — never track it.** It's a real dir of

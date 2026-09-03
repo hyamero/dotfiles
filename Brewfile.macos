@@ -1,0 +1,3 @@
+# macOS-only. Casks do not exist on Linux brew, so a single Brewfile
+# containing these would abort the whole bundle run on Linux/WSL.
+cask "unnaturalscrollwheels"

@@ -4,14 +4,23 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGES=(zsh git claude agents herdr ghostty)
 
-# 1. Homebrew (Apple Silicon path)
+# 1. Homebrew. Install prefix differs per platform: /opt/homebrew on Apple
+#    Silicon, /home/linuxbrew/.linuxbrew on Linux/WSL. The installer does not
+#    put brew on PATH for the current shell, so source shellenv from whichever
+#    prefix it created.
 if ! command -v brew >/dev/null 2>&1; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  for prefix in /opt/homebrew /home/linuxbrew/.linuxbrew; do
+    if [ -x "$prefix/bin/brew" ]; then eval "$("$prefix/bin/brew" shellenv)"; break; fi
+  done
 fi
 
-# 2. Packages (includes stow)
+# 2. Packages (includes stow). Casks are macOS-only and abort the whole bundle
+#    run on Linux, so they live in a separate Brewfile.macos.
 brew bundle --file="$DOTFILES_DIR/Brewfile"
+if [ "$(uname -s)" = "Darwin" ] && [ -f "$DOTFILES_DIR/Brewfile.macos" ]; then
+  brew bundle --file="$DOTFILES_DIR/Brewfile.macos"
+fi
 
 # 3. Back up conflicting files (real files, foreign or dangling symlinks),
 #    then stow each package. Skip paths that already resolve to the repo

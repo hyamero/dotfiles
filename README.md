@@ -1,7 +1,13 @@
 # dotfiles
 
-Version-controlled macOS configs with a one-command bootstrap for a fresh Mac,
+Version-controlled configs with a one-command bootstrap for a fresh machine,
 kept in a private repo and managed with [GNU Stow](https://www.gnu.org/software/stow/).
+
+Runs on **macOS** and on **Linux/WSL**. Everything platform-specific is behind a
+runtime check rather than a separate branch: `.zprofile`/`.zshrc` probe for the
+Homebrew prefix, `install.sh` layers `Brewfile.macos` (casks) only on Darwin, and
+absolute `$HOME` paths are never committed. See
+[Cross-platform notes](#cross-platform-notes).
 
 ## How it works
 
@@ -15,9 +21,9 @@ Where a target dir already exists and holds other apps' data (`~/.config`,
 `~/.claude/settings.json`), leaving everything else — caches, sessions, history
 — untouched and untracked.
 
-> **Note:** the repo lives at `~/documents/projects/personal/dotfiles`, not
-> directly under `$HOME`, so every `stow` command must pass `-t "$HOME"`.
-> `install.sh` and the snippets below already do.
+> **Note:** the repo does not live directly under `$HOME` (`~/documents/projects/personal/dotfiles`
+> on the Mac, `~/projects/personal/dotfiles` on the WSL box), so every `stow`
+> command must pass `-t "$HOME"`. `install.sh` and the snippets below already do.
 
 ## Layout
 
@@ -35,7 +41,8 @@ dotfiles/
 ├── README.md
 ├── CLAUDE.md             # repo gotchas + workflow (for Claude Code)
 ├── .gitignore
-├── Brewfile              # generated via `brew bundle dump`
+├── Brewfile              # generated via `brew bundle dump`; formulae only
+├── Brewfile.macos        # casks — layered on top by install.sh on Darwin
 ├── claude-plugins.list   # generated; plugins install.sh reinstalls
 ├── install.sh            # bootstrap: homebrew → brew bundle → stow → glue → plugins
 ├── zsh/
@@ -70,10 +77,14 @@ cd ~/documents/projects/personal/dotfiles
 ./install.sh
 ```
 
+On Linux/WSL, clone wherever you keep projects (`~/projects/personal/dotfiles`) —
+nothing depends on the repo's location except that it isn't `$HOME` itself.
+
 `install.sh` is idempotent — safe to re-run anytime. It:
 
 1. Installs **Homebrew** if missing.
-2. Runs `brew bundle` to install everything in the `Brewfile` (including `stow`).
+2. Runs `brew bundle` on the `Brewfile` (including `stow`), plus `Brewfile.macos`
+   when `uname -s` is `Darwin`.
 3. Backs up any conflicting real file at a target path to `*.pre-stow`, then
    **stows** every package (with `-t "$HOME"`).
 4. Creates the `~/.claude/skills` glue links on first run (see
@@ -113,6 +124,11 @@ brew bundle dump --file=Brewfile --force --no-vscode
 
 VS Code extensions are intentionally excluded (synced via VS Code Settings
 Sync) — `--no-vscode` keeps them out.
+
+> **Run this on the Mac only, and move any `cask` lines it emits into
+> `Brewfile.macos` afterwards.** `dump` writes one flat file; a `cask` left in
+> `Brewfile` aborts the entire bundle run on Linux. Dumping on Linux would also
+> drop every Mac-only formula from the list.
 
 ### Refresh the plugin list
 
@@ -160,8 +176,14 @@ no-op miss, not an error.
 - `~/.claude/hooks/herdr-agent-state.sh` — herdr-managed, overwritten on update
 
 **Secrets.** No credentials are committed, even though the repo is private. Keep
-machine-specific secrets in an untracked `~/.zshrc.local` (ignored via `*.local`)
-and source it from `.zshrc`.
+machine-specific secrets in an untracked `~/.zshrc.local`; the last line of
+`.zshrc` sources it when present.
+
+**Machine-local git config.** `~/.gitconfig.local` is included from the tracked
+`.gitconfig` and is where per-machine settings go — credential helpers (the one
+`gh auth setup-git` writes points at an absolute `gh` path, which differs per
+platform), per-machine identities, or `commit.gpgsign = false` on a box whose
+signing key isn't loaded. git skips the include silently when the file is absent.
 
 **`.gitignore`:**
 
@@ -171,3 +193,18 @@ docs/superpowers/    # design notes, local-only
 *.pre-stow           # install.sh backups
 *.local              # machine-local overrides
 ```
+
+## Cross-platform notes
+
+The repo is shared between a Mac and a WSL (Ubuntu) box. What differs, and how
+it's handled:
+
+| Difference | Handling |
+| --- | --- |
+| Homebrew prefix (`/opt/homebrew` vs. `/home/linuxbrew/.linuxbrew`) | `.zprofile` probes both; `.zshrc` repeats the probe for non-login shells, which never source `.zprofile`. `install.sh` sources `shellenv` from whichever prefix the installer created. |
+| Casks | Linux brew has none — they live in `Brewfile.macos`, applied only on Darwin. |
+| `$HOME` (`/Users/…` vs. `/home/…`) | Nothing tracked may hardcode it. `settings.json` hook commands use `$HOME`; `.gitconfig` uses `~`. |
+| Untracked machine-local files (`statusline.sh`, herdr's `herdr-agent-state.sh`, `.orca` hooks) | Every `settings.json` hook that references one is guarded with a `[ -f … ] && … \|\| true` so a missing file is a no-op, not a failing hook. |
+| Standalone pnpm location (`$PNPM_HOME` vs. `$PNPM_HOME/bin`) | Both are on PATH; `$PNPM_HOME/bin` is *appended* so corepack's shim still wins. |
+| Untrusted taps | Linux brew refuses third-party taps until trusted: `brew trust tursodatabase/tap && brew trust libsql/sqld` before `turso` will install. |
+| Ghostty | Only used on the Mac; on WSL the terminal is Windows Terminal, and the `macos-*` keys in `ghostty/config` are inert. The package is still stowed — harmless. |

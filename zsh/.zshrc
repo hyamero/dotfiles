@@ -1,6 +1,15 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
+# Non-login shells skip .zprofile, so make sure brew is on PATH before
+# anything below depends on it. Prefix differs per platform.
+if ! command -v brew >/dev/null 2>&1; then
+  for _brew in /opt/homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+    if [[ -x $_brew ]]; then eval "$($_brew shellenv)"; break; fi
+  done
+  unset _brew
+fi
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -108,18 +117,24 @@ source $ZSH/oh-my-zsh.sh
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+# Standalone pnpm lands in $PNPM_HOME on macOS but $PNPM_HOME/bin on Linux.
+# Appended, not prepended, so corepack's shim still wins (see nvm note below).
+export PATH="$PATH:$PNPM_HOME/bin"
 # pnpm end
 
 # bun completions
-[ -s "/Users/hyamero/.bun/_bun" ] && source "/Users/hyamero/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-. "$HOME/.turso/env"
+[ -s "$HOME/.turso/env" ] && . "$HOME/.turso/env"
 export PATH="$HOME/.local/bin:$PATH"
 
 # Use nvm's default Node (24.x) so corepack's pnpm shim is on PATH ahead of the
 # stale standalone pnpm. Must run after all PATH edits above.
 nvm use default --silent 2>/dev/null
+
+# Machine-local overrides (untracked, gitignored via *.local).
+[ -s "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

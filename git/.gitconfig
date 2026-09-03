@@ -1,8 +1,12 @@
 [user]
 	name = Joseph Dale Banares
 	email = daleban.dev@gmail.com
-	signingkey = /Users/hyamero/.ssh/id_ed25519.pub
+	signingkey = ~/.ssh/id_ed25519.pub
 [gpg]
 	format = ssh
 [commit]
 	gpgsign = true
+# Machine-local settings (credential helpers, per-machine identities).
+# Untracked; git silently skips it when absent.
+[include]
+	path = ~/.gitconfig.local
