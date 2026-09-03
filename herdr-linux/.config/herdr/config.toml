@@ -1,0 +1,21 @@
+onboarding = false
+[theme]
+name = "rose-pine"
+auto_switch = false
+
+[keys]
+# Same physical key as the Mac's '§': the one left of '1'. A US/ANSI Windows
+# keyboard puts '`' there instead, and there is no '§' to bind at all.
+# Unlike '§' this one IS typed in code (shell, markdown fences) -- the tradeoff
+# is accepted because every alternative was worse: ':' eats ':w' in vim
+# (-> workspace_picker) and 'esc' eats esc+hjkl (-> focus_pane_*).
+prefix = "`"
+
+[ui]
+agent_panel_sort = "spaces"
+show_agent_labels_on_pane_borders = true
+
+# Lets agents ping via `herdr notification show`; defaults to "off", which
+# makes that call a silent no-op.
+[ui.toast]
+delivery = "system"

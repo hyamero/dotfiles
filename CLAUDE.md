@@ -41,6 +41,24 @@ See README.md for usage and the Cross-platform notes table.
   directory symlink (e.g. `~/.agents/skills`) are real files reached *through*
   the link; a naive `[ -e ] && [ ! -L ]` backup renames repo files. The
   `! [ "$target" -ef <repo file> ]` check skips already-stowed paths.
+- **`herdr integration install claude` appends a duplicate hook.** It writes
+  `~/.claude/hooks/herdr-agent-state.sh` (untracked, herdr-managed — that part is
+  fine) and then "ensures" a `SessionStart` hook in `settings.json` with a
+  *hardcoded absolute path*. It does not recognise the guarded hook already
+  tracked there, so you end up with two. `settings.json` is a symlink into this
+  repo, so that lands as a repo diff: `git checkout -- claude/.claude/settings.json`
+  after running it. Same trap for any installer offering to edit a shell profile
+  (the bun installer appends a duplicate `BUN_INSTALL` block to `.zshrc`) —
+  check `git status` in this repo after running one.
+- **herdr's prefix key is platform-split across two stow packages.** `herdr`
+  (macOS, `§`) and `herdr-linux` (`` ` ``) both provide
+  `.config/herdr/config.toml`, so exactly one is stowed — `install.sh` picks by
+  `uname -s`. herdr's config has no include or conditional support and `prefix`
+  rejects an array, hence the duplication. **Any other change must be made in
+  both files**; install.sh warns when they drift apart in anything but the
+  prefix line. Note a TOML parse error silently drops herdr to *all* defaults
+  rather than failing loudly — run `herdr config check` after editing, and
+  `herdr server reload-config` to apply without restarting the session.
 - **Herdr rewrites its own `config.toml`** (theme picker, onboarding flag), so a
   write that replaces the file rather than editing in place would drop the stow
   symlink. After changing herdr settings in the TUI, `ls -la

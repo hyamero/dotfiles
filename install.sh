@@ -2,7 +2,25 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(zsh git claude agents herdr ghostty)
+PACKAGES=(zsh git claude agents ghostty)
+
+# herdr's prefix key differs per platform and its config has no include or
+# conditional support, so the two variants ship as separate stow packages.
+# Both provide .config/herdr/config.toml, so exactly one may be stowed.
+if [ "$(uname -s)" = "Darwin" ]; then
+  PACKAGES+=(herdr)
+else
+  PACKAGES+=(herdr-linux)
+fi
+
+# The two variants must stay identical apart from the prefix line -- compare
+# them with comments, blanks and the prefix stripped out.
+herdr_body() { grep -vE '^[[:space:]]*(#|$)' "$1" | grep -v '^prefix = '; }
+if ! diff <(herdr_body "$DOTFILES_DIR/herdr/.config/herdr/config.toml") \
+          <(herdr_body "$DOTFILES_DIR/herdr-linux/.config/herdr/config.toml") >/dev/null; then
+  echo "warning: herdr and herdr-linux config.toml have drifted apart" >&2
+  echo "         (they must differ only in [keys] prefix)" >&2
+fi
 
 # 1. Homebrew. Install prefix differs per platform: /opt/homebrew on Apple
 #    Silicon, /home/linuxbrew/.linuxbrew on Linux/WSL. The installer does not

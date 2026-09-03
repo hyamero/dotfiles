@@ -33,7 +33,8 @@ Where a target dir already exists and holds other apps' data (`~/.config`,
 | `git`    | `.gitconfig`, `.config/git/ignore`            |
 | `claude` | `.claude/settings.json`, `.claude/CLAUDE.md`  |
 | `agents` | `.agents/skills/`, `.agents/.skill-lock.json` |
-| `herdr`  | `.config/herdr/config.toml`                   |
+| `herdr`  | `.config/herdr/config.toml` (macOS, `§` prefix) |
+| `herdr-linux` | same, `` ` `` prefix — one or the other, never both |
 | `ghostty`| `.config/ghostty/config`, `.config/ghostty/shaders/` |
 
 ```
@@ -60,7 +61,9 @@ dotfiles/
 │       ├── .skill-lock.json
 │       └── skills/        # 23 skills — the real content
 ├── herdr/
-│   └── .config/herdr/config.toml
+│   └── .config/herdr/config.toml   # macOS variant (§ prefix)
+├── herdr-linux/
+│   └── .config/herdr/config.toml   # Linux/WSL variant (` prefix)
 └── ghostty/
     └── .config/ghostty/
         ├── config
@@ -161,9 +164,18 @@ after changing your plugins.
 runtime state (`session.json`, logs, sockets), and the Claude hook that reports
 pane state (`~/.claude/hooks/herdr-agent-state.sh`) is written by herdr itself —
 it self-declares that reinstalling the integration overwrites it, so herdr
-recreates it via `herdr integration`. Note that `claude/.claude/settings.json`
-references that hook by absolute path; on a machine without herdr the hook is a
-no-op miss, not an error.
+recreates it via `herdr integration install claude`. `claude/.claude/settings.json`
+references that hook via `$HOME` behind an existence guard, so on a machine
+without herdr it is a silent no-op rather than a failing hook.
+
+> Running `herdr integration install claude` also "ensures" its own
+> `SessionStart` entry in `settings.json`, with an absolute path, without
+> noticing the guarded one already there — leaving two. Since `settings.json`
+> is a symlink into this repo that shows up as a repo diff; revert it with
+> `git checkout -- claude/.claude/settings.json`.
+
+Only one of `herdr` / `herdr-linux` is ever stowed (see
+[Cross-platform notes](#cross-platform-notes)); a change to one belongs in both.
 
 **Deliberately excluded:**
 
@@ -207,4 +219,5 @@ it's handled:
 | Untracked machine-local files (`statusline.sh`, herdr's `herdr-agent-state.sh`, `.orca` hooks) | Every `settings.json` hook that references one is guarded with a `[ -f … ] && … \|\| true` so a missing file is a no-op, not a failing hook. |
 | Standalone pnpm location (`$PNPM_HOME` vs. `$PNPM_HOME/bin`) | Both are on PATH; `$PNPM_HOME/bin` is *appended* so corepack's shim still wins. |
 | Untrusted taps | Linux brew refuses third-party taps until trusted: `brew trust tursodatabase/tap && brew trust libsql/sqld` before `turso` will install. |
+| herdr prefix key (`§` vs. `` ` ``) | Separate `herdr` / `herdr-linux` stow packages, selected by `uname -s`. herdr's config has no include support and `prefix` takes one string, so the file is duplicated; `install.sh` warns if the two drift apart in anything but the prefix line. |
 | Ghostty | Only used on the Mac; on WSL the terminal is Windows Terminal, and the `macos-*` keys in `ghostty/config` are inert. The package is still stowed — harmless. |
