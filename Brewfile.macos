@@ -1,3 +1,10 @@
 # macOS-only. Casks do not exist on Linux brew, so a single Brewfile
 # containing these would abort the whole bundle run on Linux/WSL.
+# Also holds formulae only the Mac needs.
+
+# Open-source tailscaled CLI. Required over the GUI/App Store app, which
+# cannot run the Tailscale SSH server. Installs the binary only — still
+# needs `sudo brew services start tailscale` and `sudo tailscale up --ssh`.
+brew "tailscale"
+
 cask "unnaturalscrollwheels"

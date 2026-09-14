@@ -19,8 +19,10 @@ See README.md for usage and the Cross-platform notes table.
 - **Casks belong in `Brewfile.macos`, not `Brewfile`.** Linux brew has no cask
   support and one `cask` line aborts the *entire* `brew bundle` run. Note that
   `brew bundle dump` writes a single flat file — run it on the Mac and move the
-  cask lines back out afterwards. Linux also refuses untrusted third-party taps
-  until `brew trust <tap>` is run.
+  cask lines back out afterwards. `Brewfile.macos` also holds Mac-only
+  *formulae* (`tailscale`), which a dump likewise flattens into `Brewfile`;
+  move those back too, or WSL installs a Tailscale daemon it never uses.
+  Linux also refuses untrusted third-party taps until `brew trust <tap>` is run.
 - **`settings.json` hooks must tolerate a missing target.** `statusline.sh`,
   herdr's `herdr-agent-state.sh` and the `.orca` hooks are all untracked,
   machine-local files. Every hook referencing one is wrapped in
