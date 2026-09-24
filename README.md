@@ -1,13 +1,8 @@
 # dotfiles
 
-Version-controlled configs with a one-command bootstrap for a fresh machine,
-kept in a private repo and managed with [GNU Stow](https://www.gnu.org/software/stow/).
-
-Runs on **macOS** and on **Linux/WSL**. Everything platform-specific is behind a
-runtime check rather than a separate branch: `.zprofile`/`.zshrc` probe for the
-Homebrew prefix, `install.sh` layers `Brewfile.macos` (casks) only on Darwin, and
-absolute `$HOME` paths are never committed. See
-[Cross-platform notes](#cross-platform-notes).
+Shell, git, terminal and AI-agent configs for **macOS** and **Linux/WSL**,
+managed with [GNU Stow](https://www.gnu.org/software/stow/) and bootstrapped by
+one script.
 
 <img width="1470" height="828" alt="Terminal setup screenshot" src="https://github.com/user-attachments/assets/216243d1-fdcc-4cd8-b326-4ca4f1294876" />
 
@@ -15,118 +10,97 @@ Ghostty shader demo:
 
 https://github.com/user-attachments/assets/15de2272-edf4-4102-8ff2-0d1b4224f1e7
 
-## How it works
+## What's inside
 
-Stow uses a symlink-farm layout: each top-level dir is a *package* that mirrors
-`$HOME`, and `stow <package>` symlinks its contents into place. So `~/.zshrc`
-becomes a symlink to `zsh/.zshrc` in this repo — edit either path, it's the same
-file.
+| Package | What it configures |
+| --- | --- |
+| `zsh` | Oh My Zsh with `fzf`, `z`, autosuggestions and syntax highlighting; Homebrew and pnpm path setup for both platforms |
+| `git` | SSH commit signing, with per-machine overrides in an untracked `~/.gitconfig.local` |
+| `ghostty` | GitHub Dark Colorblind theme, VictorMono Nerd Font, and two custom GLSL shaders: an animated galaxy backdrop and a caret that smears between cells |
+| `herdr` / `herdr-linux` | [herdr](https://herdr.dev) terminal workspace config; only the prefix key differs per platform |
+| `claude` | Claude Code settings and global instructions |
+| `agents` | A collection of agent skills (`~/.agents/skills`) for frontend, design, testing and workflow tasks |
 
-Where a target dir already exists and holds other apps' data (`~/.config`,
-`~/.claude`), stow only symlinks the individual tracked *leaves* inside it (e.g.
-`~/.claude/settings.json`), leaving everything else — caches, sessions, history
-— untouched and untracked.
+Packages are listed in `Brewfile` (cross-platform) and `Brewfile.macos` (casks
+and Mac-only formulae).
 
-> **Note:** the repo does not live directly under `$HOME` (`~/documents/projects/personal/dotfiles`
-> on the Mac, `~/projects/personal/dotfiles` on the WSL box), so every `stow`
-> command must pass `-t "$HOME"`. `install.sh` and the snippets below already do.
-
-## Layout
-
-```
-dotfiles/
-├── AGENTS.md             # repo gotchas + workflow (for coding agents)
-├── Brewfile              # generated via `brew bundle dump`; formulae only
-├── Brewfile.macos        # casks + Mac-only formulae, layered on by install.sh on Darwin
-├── claude-plugins.list   # generated; plugins install.sh reinstalls
-├── install.sh            # bootstrap: homebrew → brew bundle → stow → glue → plugins
-├── zsh/                  # .zshrc, .zprofile
-├── git/                  # .gitconfig, .config/git/ignore
-├── claude/
-│   └── .claude/
-│       ├── settings.json
-│       └── CLAUDE.md     # global Claude Code defaults
-├── agents/
-│   └── .agents/
-│       ├── .skill-lock.json
-│       └── skills/       # the real skill content
-├── herdr/                # .config/herdr/config.toml, macOS (§ prefix)
-├── herdr-linux/          # same file, Linux/WSL (` prefix) — one of the two is stowed
-└── ghostty/
-    └── .config/ghostty/
-        ├── config
-        └── shaders/      # custom-shader GLSL passes
-```
-
-## Setup
-
-### Fresh machine
+## Install
 
 ```sh
-git clone git@github.com:hyamero/dotfiles.git ~/documents/projects/personal/dotfiles
-cd ~/documents/projects/personal/dotfiles
+git clone https://github.com/hyamero/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ./install.sh
 ```
 
-On Linux/WSL, clone wherever you keep projects (`~/projects/personal/dotfiles`) —
-nothing depends on the repo's location except that it isn't `$HOME` itself.
+The repo can live anywhere except `$HOME` itself. `install.sh` is idempotent and:
 
-`install.sh` is idempotent — safe to re-run anytime. It:
+1. Installs Homebrew if it's missing.
+2. Runs `brew bundle` on `Brewfile`, plus `Brewfile.macos` on macOS.
+3. Moves any conflicting file to `*.pre-stow`, then stows every package into `$HOME`.
+4. Links the agent skills into `~/.claude/skills`.
+5. Reinstalls the Claude Code plugins in `claude-plugins.list`, if the `claude` CLI is installed.
 
-1. Installs **Homebrew** if missing.
-2. Runs `brew bundle` on the `Brewfile` (including `stow`), plus `Brewfile.macos`
-   when `uname -s` is `Darwin`.
-3. Backs up any conflicting real file at a target path to `*.pre-stow`, then
-   **stows** every package (with `-t "$HOME"`).
-4. Creates the `~/.claude/skills` glue links on first run (see
-   [What's tracked vs. not](#whats-tracked-vs-not)).
-5. Reinstalls the Claude plugins listed in `claude-plugins.list` — if the
-   `claude` CLI is present. Re-run after installing Claude Code if it wasn't.
+Not handled by the script: [Oh My Zsh](https://ohmyz.sh) and its
+`zsh-autosuggestions` / `zsh-syntax-highlighting` plugins, and the VictorMono
+Nerd Font.
 
-### Verify
+### Making it your own
 
-- `ls -la ~/.zshrc ~/.gitconfig ~/.claude/settings.json` — symlinks pointing into the repo
-- A new `zsh` shell loads without errors; `git config --global user.name` resolves
-- `claude` sees its settings + skills (paths resolve through the symlinks)
+If you fork this, change at least:
 
-## Daily use
+- `[user]` in `git/.gitconfig`: name, email and signing key.
+- The herdr `prefix` key in both herdr configs.
+- `Brewfile` and `claude-plugins.list`, down to the tools you actually use.
 
-`~/.zshrc` etc. are symlinks into this repo — edit them as usual, then commit
-from the repo root. Review before staging: tools and installers also write into
-these files (herdr's duplicate hook, the bun installer's `.zshrc` block,
-machine-specific Claude settings), and `git add -A` would sweep that in.
+Keep secrets and machine-specific settings in `~/.zshrc.local` and
+`~/.gitconfig.local`. Both are sourced when present and never tracked.
 
-```sh
-git status && git diff
-git add <paths> && git commit -m "..." && git push
-```
+## How it works
 
-### Add a config
+Each top-level directory is a Stow *package* that mirrors `$HOME`, so
+`zsh/.zshrc` is symlinked to `~/.zshrc`. Editing either path edits the same file.
 
-Place the file in a package dir mirroring its `$HOME` path, then re-stow from
-the repo root:
+When a target directory already holds other data (`~/.config`, `~/.claude`),
+Stow links only the tracked files inside it and leaves caches, sessions and
+history alone.
+
+To add a config, put the file in a package at its `$HOME`-relative path and
+re-stow:
 
 ```sh
 stow -t "$HOME" --restow <package>
 ```
 
-### Refresh the Brewfile
+Always pass `-t "$HOME"`: Stow otherwise targets the repo's parent directory.
+
+## Cross-platform notes
+
+Everything platform-specific is handled by a runtime check, not a separate
+branch.
+
+| Difference | Handling |
+| --- | --- |
+| Homebrew prefix (`/opt/homebrew` vs. `/home/linuxbrew/.linuxbrew`) | `.zprofile`, `.zshrc` and `install.sh` each probe for both. `.zshrc` needs its own probe because non-login shells never read `.zprofile`. |
+| Casks | Linux Homebrew has none, so they live in `Brewfile.macos`, applied only on macOS. |
+| Home directory | No absolute home path is committed. `settings.json` hooks use `$HOME`; `.gitconfig` uses `~`. |
+| Optional local files | Claude Code hooks that point at untracked scripts (status line, herdr state) are wrapped in `[ -f … ] && … \|\| true`, so a missing script is a no-op. |
+| Third-party taps | Linux Homebrew refuses untrusted taps. Entries marked `trusted: true` handle this; for the rest, run `brew trust tursodatabase/tap && brew trust libsql/sqld && brew trust blankeos/tap` first. |
+| herdr prefix key | herdr's config has no includes and `prefix` takes one value, so there are two packages and `install.sh` stows the one for the current OS. It warns if they drift apart in anything but the prefix line. |
+| Ghostty | macOS only. On Linux the package is stowed but unused. |
+
+## Maintenance
+
+**Refresh the Brewfile** (on macOS):
 
 ```sh
 brew bundle dump --file=Brewfile --force --no-vscode
 ```
 
-`--no-vscode` keeps VS Code extensions out; they sync via Settings Sync.
+`dump` writes one flat file, so move cask lines and Mac-only formulae back into
+`Brewfile.macos` afterwards. A single `cask` line in `Brewfile` aborts the whole
+run on Linux.
 
-> **Run this on the Mac only, and move any `cask` lines — and Mac-only formulae
-> like `tailscale` and `nosleep` — into `Brewfile.macos` afterwards.** `dump`
-> writes one flat file; a `cask` left in `Brewfile` aborts the entire bundle run
-> on Linux. Dumping on Linux would also drop every Mac-only formula from the list.
-
-### Refresh the plugin list
-
-After adding or removing Claude plugins, regenerate `claude-plugins.list` from
-the installed set:
+**Refresh the plugin list** after installing or removing Claude Code plugins:
 
 ```sh
 { echo "# Claude plugins to reinstall on a fresh machine."
@@ -135,57 +109,18 @@ the installed set:
 } > claude-plugins.list
 ```
 
-## What's tracked vs. not
+`settings.json`'s `enabledPlugins` isn't used as the restore list because
+Claude Code rewrites and prunes it.
 
-**The skills glue.** `~/.claude/skills` is *not* tracked — it's a directory of
-relative symlinks (`../../.agents/skills/<name>`) created by a skills CLI that
-only resolve from `$HOME`. The real skill content lives in `~/.agents/skills`
-and is tracked via the `agents` package; `install.sh` regenerates the glue links
-on a fresh machine.
+**Watch for installer edits.** `settings.json` and `.zshrc` are symlinks into
+the repo, so tools that edit them show up in `git diff`. For example, `herdr
+integration install claude` adds a duplicate hook. Review `git diff` before
+committing.
 
-**Plugins.** Only `claude-plugins.list` is tracked, not plugin code. It's the
-restore source because `settings.json`'s `enabledPlugins` is auto-managed and
-pruned by Claude Code, so it can't be relied on.
+## Not tracked
 
-**Herdr.** Only `config.toml` is tracked. herdr writes its Claude hook
-(`~/.claude/hooks/herdr-agent-state.sh`) itself via `herdr integration install
-claude`; `settings.json` references it behind an existence guard, so it's a
-no-op on a machine without herdr. That install command also appends a second,
-absolute-path `SessionStart` hook to `settings.json` — revert it with
-`git checkout -- claude/.claude/settings.json`.
-
-**Deliberately excluded:**
-
-- `~/.config/gh` — contains auth tokens
-- `~/.config/raycast`, `~/.config/opencode` — machine state
-- `~/.config/fish` — unused
-- `~/.claude` machine state — cache, sessions, history, plugins, projects
-- `~/.config/herdr` runtime state — `session.json`, `*.log`, `*.sock`
-- `~/.local/state/herdr/` — agent-detection state, regenerated by herdr
-- `~/.claude/hooks/herdr-agent-state.sh` — herdr-managed, overwritten on update
-
-**Secrets.** No credentials are committed, even though the repo is private. Keep
-machine-specific secrets in an untracked `~/.zshrc.local`; the last line of
-`.zshrc` sources it when present.
-
-**Machine-local git config.** `~/.gitconfig.local` is included from the tracked
-`.gitconfig` and is where per-machine settings go — credential helpers (the one
-`gh auth setup-git` writes points at an absolute `gh` path, which differs per
-platform), per-machine identities, or `commit.gpgsign = false` on a box whose
-signing key isn't loaded. git skips the include silently when the file is absent.
-
-## Cross-platform notes
-
-The repo is shared between a Mac and a WSL (Ubuntu) box. What differs, and how
-it's handled:
-
-| Difference | Handling |
-| --- | --- |
-| Homebrew prefix (`/opt/homebrew` vs. `/home/linuxbrew/.linuxbrew`) | `.zprofile` probes both; `.zshrc` repeats the probe for non-login shells, which never source `.zprofile`. `install.sh` sources `shellenv` from whichever prefix the installer created. |
-| Casks | Linux brew has none — they live in `Brewfile.macos`, applied only on Darwin. |
-| `$HOME` (`/Users/…` vs. `/home/…`) | Nothing tracked may hardcode it. `settings.json` hook commands use `$HOME`; `.gitconfig` uses `~`. |
-| Untracked machine-local files (`statusline.sh`, herdr's `herdr-agent-state.sh`, `.orca` hooks) | Every `settings.json` hook that references one is guarded with a `[ -f … ] && … \|\| true` so a missing file is a no-op, not a failing hook. |
-| Standalone pnpm location (`$PNPM_HOME` vs. `$PNPM_HOME/bin`) | Both are on PATH; `$PNPM_HOME/bin` is *appended* so corepack's shim still wins. |
-| Untrusted taps | Linux brew refuses third-party taps until trusted. Entries `brew bundle dump` marks `trusted: true` handle this themselves; the rest need `brew trust tursodatabase/tap && brew trust libsql/sqld && brew trust blankeos/tap` first. |
-| herdr prefix key (`§` vs. `` ` ``) | Separate `herdr` / `herdr-linux` stow packages, selected by `uname -s`. herdr's config has no include support and `prefix` takes one string, so the file is duplicated; `install.sh` warns if the two drift apart in anything but the prefix line. A change to one belongs in both. |
-| Ghostty | Only used on the Mac; on WSL the terminal is Windows Terminal, and the `macos-*` keys in `ghostty/config` are inert. The package is still stowed — harmless. |
+- `~/.config/gh` (auth tokens) and any other credentials
+- App and agent state: Claude Code caches, sessions and plugin code; herdr
+  sessions, logs and sockets
+- `~/.claude/skills`, which `install.sh` regenerates as links into `~/.agents/skills`
+- `~/.zshrc.local` and `~/.gitconfig.local`
