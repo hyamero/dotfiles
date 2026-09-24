@@ -12,6 +12,9 @@ absolute `$HOME` paths are never committed. See
 <img width="1470" height="828" alt="image" src="https://github.com/user-attachments/assets/216243d1-fdcc-4cd8-b326-4ca4f1294876" />
 
 
+https://github.com/user-attachments/assets/15de2272-edf4-4102-8ff2-0d1b4224f1e7
+
+
 ## How it works
 
 Stow uses a symlink-farm layout: each top-level dir is a *package* that mirrors
