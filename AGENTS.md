@@ -39,6 +39,11 @@ See README.md for usage and the Cross-platform notes table.
   *relative* symlinks (`../../.agents/skills/<name>`) that only resolve from
   `$HOME`. The real skill content lives in `~/.agents/skills`, tracked via the
   `agents` package. install.sh recreates the glue links on first run.
+- **Skills are local unless allowlisted.** `.gitignore` ignores
+  `agents/.agents/skills/*` and re-includes a short list of general skills with
+  `!` lines. A newly installed skill stays untracked (it still works, via the
+  folded `~/.agents/skills` symlink); to share it, add a `!` line. Keep work- or
+  stack-specific skills off the list.
 - **install.sh `backup_conflicts` needs the `-ef` guard.** Files inside a folded
   directory symlink (e.g. `~/.agents/skills`) are real files reached *through*
   the link; a naive `[ -e ] && [ ! -L ]` backup renames repo files. The

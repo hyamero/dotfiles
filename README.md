@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/15de2272-edf4-4102-8ff2-0d1b4224f1e7
 | `ghostty` | GitHub Dark Colorblind theme, VictorMono Nerd Font, and two custom GLSL shaders: an animated galaxy backdrop and a caret that smears between cells |
 | `herdr` / `herdr-linux` | [herdr](https://herdr.dev) terminal workspace config; only the prefix key differs per platform |
 | `claude` | Claude Code settings and global instructions |
-| `agents` | A collection of agent skills (`~/.agents/skills`) for frontend, design, testing and workflow tasks |
+| `agents` | A small set of general agent skills (`~/.agents/skills`): commit messages, planning interviews, architecture review, ticket and release-notes workflows |
 
 Packages are listed in `Brewfile` (cross-platform) and `Brewfile.macos` (casks
 and Mac-only formulae).
@@ -123,4 +123,5 @@ committing.
 - App and agent state: Claude Code caches, sessions and plugin code; herdr
   sessions, logs and sockets
 - `~/.claude/skills`, which `install.sh` regenerates as links into `~/.agents/skills`
+- Any skill not allowlisted in `.gitignore`: installed skills stay local by default
 - `~/.zshrc.local` and `~/.gitconfig.local`

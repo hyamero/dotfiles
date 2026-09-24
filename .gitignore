@@ -4,3 +4,17 @@ docs/superpowers/
 *.bak
 # machine-local overrides, e.g. .zshrc.local
 *.local
+
+# Skills are local by default; only the allowlisted general ones are tracked.
+agents/.agents/skills/*
+!agents/.agents/skills/caveman/
+!agents/.agents/skills/caveman-commit/
+!agents/.agents/skills/compress/
+!agents/.agents/skills/find-skills/
+!agents/.agents/skills/frontend-design/
+!agents/.agents/skills/grill-me/
+!agents/.agents/skills/grill-with-docs/
+!agents/.agents/skills/herdr/
+!agents/.agents/skills/improve-codebase-architecture/
+!agents/.agents/skills/linear-ticket-workflow/
+!agents/.agents/skills/release-notes/
