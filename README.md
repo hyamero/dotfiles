@@ -9,6 +9,9 @@ Homebrew prefix, `install.sh` layers `Brewfile.macos` (casks) only on Darwin, an
 absolute `$HOME` paths are never committed. See
 [Cross-platform notes](#cross-platform-notes).
 
+<img width="1470" height="828" alt="image" src="https://github.com/user-attachments/assets/216243d1-fdcc-4cd8-b326-4ca4f1294876" />
+
+
 ## How it works
 
 Stow uses a symlink-farm layout: each top-level dir is a *package* that mirrors
