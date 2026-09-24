@@ -46,7 +46,7 @@ Where a target dir already exists and holds other apps' data (`~/.config`,
 ```
 dotfiles/
 ├── README.md
-├── CLAUDE.md             # repo gotchas + workflow (for Claude Code)
+├── AGENTS.md             # repo gotchas + workflow (for coding agents)
 ├── .gitignore
 ├── Brewfile              # generated via `brew bundle dump`; formulae only
 ├── Brewfile.macos        # casks — layered on top by install.sh on Darwin
