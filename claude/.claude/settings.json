@@ -6,7 +6,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "skillOverrides": {
     "agents-sdk": "off",
     "apple-design": "off",
@@ -169,25 +169,45 @@
     "command": "[ -x \"$HOME/.claude/statusline.sh\" ] && \"$HOME/.claude/statusline.sh\" || true"
   },
   "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": false,
     "commit-commands@claude-plugins-official": false,
     "context7@claude-plugins-official": true,
     "figma@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "linear@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": false,
+    "linear@claude-plugins-official": false,
     "posthog@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "supabase@claude-plugins-official": true,
+    "supabase@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "claude-md-management@claude-plugins-official": false,
+    "code-review@claude-plugins-official": false,
+    "feature-dev@claude-plugins-official": false,
+    "github@claude-plugins-official": false,
+    "playwright@claude-plugins-official": false,
+    "skill-creator@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": false,
+    "mattpocock-skills@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "diagram-design": {
+      "source": {
+        "source": "github",
+        "repo": "cathrynlavery/diagram-design"
+      }
+    }
   },
   "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
   "voice": {
     "enabled": true,
     "mode": "hold"
@@ -195,5 +215,6 @@
   "skipWorkflowUsageWarning": true,
   "theme": "dark",
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "instructionFiles": "claude-md-and-agents-md"
 }
