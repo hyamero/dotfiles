@@ -1,7 +1,7 @@
 # dotfiles
 
 GNU Stow–managed dotfiles, shared between a **Mac** and a **WSL (Ubuntu)** box.
-Each top-level dir (`zsh/`, `git/`, `claude/`, `agents/`, `herdr/`, `ghostty/`)
+Each top-level dir (`zsh/`, `git/`, `claude/`, `agents/`, `herdr/`, `herdr-linux/`, `ghostty/`)
 is a stow *package* mirroring `$HOME`; stow symlinks its contents into place.
 See README.md for usage and the Cross-platform notes table.
 

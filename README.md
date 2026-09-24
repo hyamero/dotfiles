@@ -65,7 +65,7 @@ dotfiles/
 ├── agents/
 │   └── .agents/
 │       ├── .skill-lock.json
-│       └── skills/        # 23 skills — the real content
+│       └── skills/        # the real skill content
 ├── herdr/
 │   └── .config/herdr/config.toml   # macOS variant (§ prefix)
 ├── herdr-linux/
@@ -224,6 +224,6 @@ it's handled:
 | `$HOME` (`/Users/…` vs. `/home/…`) | Nothing tracked may hardcode it. `settings.json` hook commands use `$HOME`; `.gitconfig` uses `~`. |
 | Untracked machine-local files (`statusline.sh`, herdr's `herdr-agent-state.sh`, `.orca` hooks) | Every `settings.json` hook that references one is guarded with a `[ -f … ] && … \|\| true` so a missing file is a no-op, not a failing hook. |
 | Standalone pnpm location (`$PNPM_HOME` vs. `$PNPM_HOME/bin`) | Both are on PATH; `$PNPM_HOME/bin` is *appended* so corepack's shim still wins. |
-| Untrusted taps | Linux brew refuses third-party taps until trusted: `brew trust tursodatabase/tap && brew trust libsql/sqld` before `turso` will install. |
+| Untrusted taps | Linux brew refuses third-party taps until trusted. Entries `brew bundle dump` marks `trusted: true` handle this themselves; the rest need `brew trust tursodatabase/tap && brew trust libsql/sqld && brew trust blankeos/tap` first. |
 | herdr prefix key (`§` vs. `` ` ``) | Separate `herdr` / `herdr-linux` stow packages, selected by `uname -s`. herdr's config has no include support and `prefix` takes one string, so the file is duplicated; `install.sh` warns if the two drift apart in anything but the prefix line. |
 | Ghostty | Only used on the Mac; on WSL the terminal is Windows Terminal, and the `macos-*` keys in `ghostty/config` are inert. The package is still stowed — harmless. |
