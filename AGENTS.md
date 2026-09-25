@@ -23,11 +23,12 @@ See README.md for usage and the Cross-platform notes table.
   *formulae* (`tailscale`), which a dump likewise flattens into `Brewfile`;
   move those back too, or WSL installs a Tailscale daemon it never uses.
   Linux also refuses untrusted third-party taps until `brew trust <tap>` is run.
-- **`settings.json` hooks must tolerate a missing target.** `statusline.sh`,
-  herdr's `herdr-agent-state.sh` and the `.orca` hooks are all untracked,
-  machine-local files. Every hook referencing one is wrapped in
-  `[ -f … ] && … || true`; drop the guard and every session on the other machine
-  fires a failing hook.
+- **`settings.json` hooks must tolerate a missing target.** herdr's
+  `herdr-agent-state.sh` and the `.orca` hooks are untracked, machine-local
+  files. Every hook referencing one is wrapped in `[ -f … ] && … || true`; drop
+  the guard and every session on the other machine fires a failing hook.
+  `statusline.sh` is tracked (claude package) but keeps its guard, so a
+  half-stowed setup still starts cleanly.
 - **Per-machine git settings go in `~/.gitconfig.local`**, included from the
   tracked `.gitconfig`. Credential helpers in particular embed an absolute `gh`
   path, so they must never land in the tracked file.

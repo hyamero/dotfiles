@@ -83,7 +83,7 @@ branch.
 | Homebrew prefix (`/opt/homebrew` vs. `/home/linuxbrew/.linuxbrew`) | `.zprofile`, `.zshrc` and `install.sh` each probe for both. `.zshrc` needs its own probe because non-login shells never read `.zprofile`. |
 | Casks | Linux Homebrew has none, so they live in `Brewfile.macos`, applied only on macOS. |
 | Home directory | No absolute home path is committed. `settings.json` hooks use `$HOME`; `.gitconfig` uses `~`. |
-| Optional local files | Claude Code hooks that point at untracked scripts (status line, herdr state) are wrapped in `[ -f … ] && … \|\| true`, so a missing script is a no-op. |
+| Optional local files | Claude Code hooks that point at untracked scripts (herdr state, Orca) are wrapped in `[ -f … ] && … \|\| true`, so a missing script is a no-op. |
 | Third-party taps | Linux Homebrew refuses untrusted taps. Entries marked `trusted: true` handle this; for the rest, run `brew trust tursodatabase/tap && brew trust libsql/sqld && brew trust blankeos/tap` first. |
 | herdr prefix key | herdr's config has no includes and `prefix` takes one value, so there are two packages and `install.sh` stows the one for the current OS. It warns if they drift apart in anything but the prefix line. |
 | Ghostty | macOS only. On Linux the package is stowed but unused. |
