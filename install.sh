@@ -75,7 +75,7 @@ if [ ! -d "$HOME/.claude/skills" ]; then
 fi
 
 # 5. Claude plugins: reinstall the tracked list. claude-plugins.list is
-#    generated from installed_plugins.json (see README) — we don't read
+#    generated from installed_plugins.json (see AGENTS.md) — we don't read
 #    settings.json's enabledPlugins, which Claude Code auto-manages and prunes.
 #    The claude-plugins-official marketplace is built-in, no registration needed.
 #    Skipped (with a note) if the claude CLI isn't installed yet.

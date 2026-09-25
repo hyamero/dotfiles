@@ -3,7 +3,7 @@
 GNU Stow–managed dotfiles, shared between a **Mac** and a **WSL (Ubuntu)** box.
 Each top-level dir (`zsh/`, `git/`, `claude/`, `agents/`, `herdr/`, `herdr-linux/`, `ghostty/`)
 is a stow *package* mirroring `$HOME`; stow symlinks its contents into place.
-See README.md for usage and the Cross-platform notes table.
+See README.md for install; the gotchas below cover the cross-platform details.
 
 ## Critical gotchas
 
@@ -99,4 +99,11 @@ See README.md for usage and the Cross-platform notes table.
 - Refresh Brewfile: `brew bundle dump --file=Brewfile --force --no-vscode`
   (VS Code extensions excluded — synced via Settings Sync).
 - Re-link a package after adding files: `stow -t "$HOME" --restow <package>`.
+- Refresh the plugin list after installing or removing Claude plugins:
+  ```sh
+  { echo "# Claude plugins to reinstall on a fresh machine."
+    echo "# Generated from ~/.claude/plugins/installed_plugins.json — see AGENTS.md (Commands)."
+    python3 -c 'import json,os; print("\n".join(sorted(json.load(open(os.path.expanduser("~/.claude/plugins/installed_plugins.json")))["plugins"])))'
+  } > claude-plugins.list
+  ```
 - Design specs are in `docs/superpowers/` (gitignored, local only).

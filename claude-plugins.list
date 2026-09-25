@@ -1,5 +1,5 @@
 # Claude plugins to reinstall on a fresh machine.
-# Generated from ~/.claude/plugins/installed_plugins.json — see README (Refresh the plugin list).
+# Generated from ~/.claude/plugins/installed_plugins.json — see AGENTS.md (Commands).
 claude-md-management@claude-plugins-official
 code-review@claude-plugins-official
 code-simplifier@claude-plugins-official
