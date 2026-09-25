@@ -9,32 +9,14 @@
   "model": "opus",
   "skillOverrides": {
     "agents-sdk": "off",
-    "apple-design": "off",
-    "caveman-review": "off",
     "cloudflare": "off",
     "cloudflare-email-service": "off",
     "cloudflare-one": "off",
     "cloudflare-one-migrations": "off",
-    "codebase-design": "off",
-    "diagnosing-bugs": "off",
     "durable-objects": "off",
-    "handoff": "off",
-    "implement": "off",
-    "improve-animations": "off",
-    "review-animations": "off",
     "sandbox-sdk": "off",
-    "tdd": "off",
-    "teach": "off",
-    "to-spec": "off",
-    "to-tickets": "off",
-    "triage": "off",
     "turnstile-spin": "off",
-    "vercel-react-native-skills": "off",
-    "vercel-react-view-transitions": "off",
-    "wayfinder": "off",
-    "web-design-guidelines": "off",
-    "web-perf": "off",
-    "writing-great-skills": "off"
+    "web-perf": "off"
   },
   "hooks": {
     "SessionStart": [
