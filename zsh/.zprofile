@@ -7,7 +7,6 @@ elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
 fi
 
 # python.org framework build (macOS only).
-# The original version is saved in .zprofile.pysave
 if [[ -d /Library/Frameworks/Python.framework/Versions/3.13/bin ]]; then
   export PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:$PATH"
 fi

@@ -3,7 +3,6 @@
 tap "blankeos/tap"
 tap "libsql/sqld"
 tap "rjyo/moshi", trusted: true
-tap "supabase/tap"
 tap "tursodatabase/tap"
 brew "actionlint"
 brew "biome"
