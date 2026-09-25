@@ -62,7 +62,7 @@ cursor-invert-fg-bg = true
 mouse-hide-while-typing = true
 
 # macOS-specific settings
-macos-titlebar-style = tabs
+macos-titlebar-style = hidden
 macos-option-as-alt = true
 
 # window controls
