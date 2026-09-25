@@ -8,7 +8,10 @@ one script.
 
 Ghostty shader demo:
 
-https://github.com/user-attachments/assets/15de2272-edf4-4102-8ff2-0d1b4224f1e7
+https://github.com/user-attachments/assets/3ae67c7f-76c7-44b0-ab5b-b2202182e7a5
+
+
+
 
 ## What's inside
 
