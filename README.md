@@ -36,7 +36,8 @@ To add a file later, put it in a package at its `$HOME`-relative path and run
 
 ## Making it your own
 
-- Change `[user]` in `git/.gitconfig`.
+- Set your git identity in `~/.gitconfig.local` (`install.sh` prints the
+  commands). The tracked `.gitconfig` has none and signs commits with SSH.
 - Trim `Brewfile` and `claude-plugins.list` to what you use.
 - Keep secrets and per-machine settings in `~/.zshrc.local` and
   `~/.gitconfig.local`; both are sourced when present and never tracked.

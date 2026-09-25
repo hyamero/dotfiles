@@ -1,12 +1,8 @@
-[user]
-	name = Joseph Dale Banares
-	email = daleban.dev@gmail.com
-	signingkey = ~/.ssh/id_ed25519.pub
 [gpg]
 	format = ssh
 [commit]
 	gpgsign = true
-# Machine-local settings (credential helpers, per-machine identities).
+# Machine-local settings: [user] identity and signing key, credential helpers.
 # Untracked; git silently skips it when absent.
 [include]
 	path = ~/.gitconfig.local

@@ -90,4 +90,12 @@ else
   echo "note: claude CLI not found — skipping plugin install. Re-run this script after installing Claude Code to restore plugins."
 fi
 
+# 6. Git identity lives in the untracked ~/.gitconfig.local, not the repo.
+if [ -z "$(git config --global user.email)" ]; then
+  echo "note: no git identity set. Add one to ~/.gitconfig.local:"
+  echo '  git config --file ~/.gitconfig.local user.name "Your Name"'
+  echo '  git config --file ~/.gitconfig.local user.email you@example.com'
+  echo '  git config --file ~/.gitconfig.local user.signingkey ~/.ssh/id_ed25519.pub'
+fi
+
 echo "done. open a new shell to pick up zsh config."

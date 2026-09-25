@@ -30,7 +30,8 @@ See README.md for install; the gotchas below cover the cross-platform details.
   `statusline.sh` is tracked (claude package) but keeps its guard, so a
   half-stowed setup still starts cleanly.
 - **Per-machine git settings go in `~/.gitconfig.local`**, included from the
-  tracked `.gitconfig`. Credential helpers in particular embed an absolute `gh`
+  tracked `.gitconfig`. That includes the `[user]` identity and signing key, kept
+  out of the public repo so a fork can't commit as me. Credential helpers in particular embed an absolute `gh`
   path, so they must never land in the tracked file.
 - **Repo is NOT under `$HOME`** (`~/documents/projects/personal/dotfiles` on the
   Mac, `~/projects/personal/dotfiles` on WSL).
