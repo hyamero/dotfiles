@@ -45,6 +45,14 @@ keybind = super+f=toggle_fullscreen
 keybind = super+left=previous_tab
 keybind = super+right=next_tab
 
+# herdr tab/workspace nav: send Cmd+Option+hjkl as kitty CSI-u
+# (ESC[<codepoint>;11u, 11 = 1 + super 8 + alt 2) so herdr sees cmd+alt+<key>.
+# Also overrides macOS Cmd+Option+H (Hide Others).
+keybind = super+alt+h=csi:104;11u
+keybind = super+alt+j=csi:106;11u
+keybind = super+alt+k=csi:107;11u
+keybind = super+alt+l=csi:108;11u
+
 # quick terminal (global keybinding) 
 keybind = global:super+grave_accent=toggle_quick_terminal
 

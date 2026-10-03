@@ -11,6 +11,14 @@ auto_switch = false
 # (-> workspace_picker) and 'esc' eats esc+hjkl (-> focus_pane_*).
 prefix = "`"
 
+# Navigate mode (prefix+w): j/k walk workspaces, h/l stay on panes. Workspace
+# moves take j/k, so pane up/down drop to the arrows. Navigate mode has no
+# tab-movement action; tabs stay on prefix+p / prefix+n.
+navigate_workspace_down = "j"
+navigate_workspace_up = "k"
+navigate_pane_down = "down"
+navigate_pane_up = "up"
+
 [ui]
 agent_panel_sort = "spaces"
 show_agent_labels_on_pane_borders = true

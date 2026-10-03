@@ -9,6 +9,22 @@ auto_switch = false
 # Must stay unshifted: shift+§ emits '±', a distinct char, so "shift+§" never matches.
 prefix = "§"
 
+# Navigate mode (prefix+w): j/k walk workspaces, h/l stay on panes. Workspace
+# moves take j/k, so pane up/down drop to the arrows. Navigate mode has no
+# tab-movement action; tabs stay on prefix+p / prefix+n.
+navigate_workspace_down = "j"
+navigate_workspace_up = "k"
+navigate_pane_down = "down"
+navigate_pane_up = "up"
+
+# Direct vim-style nav: h/l tabs, j/k workspaces (j/k follow the vertical sidebar).
+# macOS only: ctrl+alt+h/j on WSL collide with alt+backspace / alt+newline.
+# Cmd reaches herdr only via Ghostty keybinds that send CSI-u (see ghostty config).
+previous_tab = "cmd+alt+h"
+next_tab = "cmd+alt+l"
+next_workspace = "cmd+alt+j"
+previous_workspace = "cmd+alt+k"
+
 [ui]
 agent_panel_sort = "spaces"
 show_agent_labels_on_pane_borders = true

@@ -15,11 +15,12 @@ fi
 
 # The two variants must stay identical apart from the prefix line -- compare
 # them with comments, blanks and the prefix stripped out.
-herdr_body() { grep -vE '^[[:space:]]*(#|$)' "$1" | grep -v '^prefix = '; }
+# Direct cmd+alt nav is macOS-only (see herdr config), so skip it when comparing.
+herdr_body() { grep -vE '^[[:space:]]*(#|$)' "$1" | grep -v '^prefix = ' | grep -v '"cmd+alt+'; }
 if ! diff <(herdr_body "$DOTFILES_DIR/herdr/.config/herdr/config.toml") \
           <(herdr_body "$DOTFILES_DIR/herdr-linux/.config/herdr/config.toml") >/dev/null; then
   echo "warning: herdr and herdr-linux config.toml have drifted apart" >&2
-  echo "         (they must differ only in [keys] prefix)" >&2
+  echo "         (they must differ only in [keys] prefix and the macOS-only cmd+alt nav)" >&2
 fi
 
 # 1. Homebrew. Install prefix differs per platform: /opt/homebrew on Apple
