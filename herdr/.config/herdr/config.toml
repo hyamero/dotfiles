@@ -20,10 +20,10 @@ navigate_pane_up = "up"
 # Direct vim-style nav: h/l tabs, j/k workspaces (j/k follow the vertical sidebar).
 # macOS only: ctrl+alt+h/j on WSL collide with alt+backspace / alt+newline.
 # Cmd reaches herdr only via Ghostty keybinds that send CSI-u (see ghostty config).
-previous_tab = "cmd+alt+h"
-next_tab = "cmd+alt+l"
-next_workspace = "cmd+alt+j"
-previous_workspace = "cmd+alt+k"
+previous_tab = "cmd+h"
+next_tab = "cmd+l"
+next_workspace = "cmd+j"
+previous_workspace = "cmd+k"
 
 [ui]
 agent_panel_sort = "spaces"
