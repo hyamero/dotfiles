@@ -34,15 +34,7 @@ sep=" ${dim}│${reset} "
 
 # Absent when the model doesn't support the effort parameter.
 effort=$(printf '%s' "$payload" | jq -r '.effort.level // empty')
-case $effort in
-  low) pips='●○○○○' ;; medium) pips='●●○○○' ;; high) pips='●●●○○' ;;
-  xhigh) pips='●●●●○' ;; max) pips='●●●●●' ;; *) pips='' ;;
-esac
-if [ -n "$pips" ]; then
-  line="${line} ${cyan}${pips}${reset} ${dim}${effort}${reset}"
-elif [ -n "$effort" ]; then
-  line="${line} ${dim}${effort}${reset}"
-fi
+[ -n "$effort" ] && line="${line} ${dim}${effort}${reset}"
 
 # Green while comfortable, then yellow at 50% and red at 80%.
 pct_color() {
@@ -74,18 +66,22 @@ ctx=$(printf '%s' "$payload" | jq -r '.context_window.used_percentage // empty |
 # rate_limits only exists for Pro/Max subscribers.
 five=$(printf '%s' "$payload" | jq -r '.rate_limits.five_hour.used_percentage // empty | floor')
 if [ -n "$five" ]; then
-  line="${line}${sep}${dim}5h${reset} $(meter "$five")"
-  # Countdown via shell arithmetic rather than `date -r`/`date -d`, which differ
-  # between macOS and GNU.
+  # The label is the countdown to the window's reset: whole hours, then minutes
+  # in the last hour. Falls back to "5h" without a usable resets_at.
+  # Shell arithmetic rather than `date -r`/`date -d`, which differ between
+  # macOS and GNU.
+  label="5h"
   resets=$(printf '%s' "$payload" | jq -r '.rate_limits.five_hour.resets_at // empty')
   if [ -n "$resets" ]; then
     left=$((resets - $(date +%s)))
-    if [ "$left" -gt 0 ]; then
-      h=$((left / 3600)); m=$((left % 3600 / 60))
-      if [ "$h" -gt 0 ]; then left="${h}h${m}m"; else left="${m}m"; fi
-      line="${line} ${dim}↻ ${left}${reset}"
+    if [ "$left" -ge 3600 ]; then
+      label="$((left / 3600))h"
+    elif [ "$left" -gt 0 ]; then
+      m=$((left / 60)); [ "$m" -lt 1 ] && m=1
+      label="${m}m"
     fi
   fi
+  line="${line}${sep}${dim}${label}${reset} $(meter "$five")"
 fi
 
 printf '%b' "$line"
