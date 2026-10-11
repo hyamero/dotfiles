@@ -28,6 +28,8 @@ previous_workspace = "cmd+k"
 [ui]
 agent_panel_sort = "spaces"
 show_agent_labels_on_pane_borders = true
+# Neighbouring panes share one divider instead of each drawing its own border.
+pane_gaps = false
 
 # Lets agents ping via `herdr notification show`; defaults to "off", which
 # makes that call a silent no-op.
