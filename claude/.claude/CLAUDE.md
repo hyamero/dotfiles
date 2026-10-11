@@ -46,17 +46,30 @@ stdout; `pane read` emits plain text. **Every wait is indefinite without
   `agent_status` (`idle`/`working`/`blocked`). Check it before assuming a job
   isn't already running in another pane.
 
-## Long-running processes go in panes, not background shells
+## Long-running processes go in panes, in one labeled tab
 
-Dev servers, watchers, builds, and tails belong in a pane I can see:
+Dev servers, watchers, builds, tails, and sibling agents belong in a pane I can
+see — but never split my current tab. Every pane you open this session goes in
+**one tab of your own**, however many panes it needs. (Overrides the herdr
+skill's same-tab default.)
 
-1. `herdr pane split --current --direction right --ratio 0.4 --cwd <path> --no-focus`
-   — a pane on the **right**, not the bottom. Returns JSON containing the new
-   `pane_id`.
-2. `herdr pane run <pane_id> '<command>'`
-3. `herdr pane wait-output <pane_id> --match "<token>" --timeout 30000`
-4. `herdr pane read <pane_id> --source visible --lines 40` to inspect.
-5. `herdr pane close <pane_id>` when done — don't leave strays behind.
+1. **First pane only:** create the tab, unfocused, labeled `<repo>: <purpose>`:
+   `herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd <path> --label "dotfiles: dev" --no-focus`
+   → `.result.tab.tab_id` and `.result.root_pane.pane_id`. Use the root pane
+   first. Reuse this tab for the rest of the session; if `herdr tab list` shows
+   it's gone, create a new one.
+2. **More panes:** split a pane *inside that tab* —
+   `herdr pane split <tab_pane_id> --direction right --cwd <path> --no-focus`
+   → `.result.pane.pane_id`. Wide → `right`, narrow → `down`.
+3. **Label every pane** with what runs in it, short:
+   `herdr pane rename <pane_id> "next dev :3000"`. If the tab's purpose
+   changes, `herdr tab rename <tab_id> "<repo>: <purpose>"`.
+4. `herdr pane run <pane_id> '<command>'`
+5. `herdr pane wait-output <pane_id> --match "<token>" --timeout 30000`
+6. `herdr pane read <pane_id> --source visible --lines 40` to inspect.
+7. **Cleanup:** `herdr pane close <pane_id>` for panes you're done with;
+   `herdr tab close <tab_id>` once the work is finished — it kills every
+   process in the tab. Don't leave strays behind.
 
 Three traps, each verified the hard way:
 
@@ -79,7 +92,8 @@ Three traps, each verified the hard way:
 ## Parallel agents
 
 For genuinely independent work too big for a subagent — a real sibling Claude
-session in its own `herdr worktree`. Load the herdr skill for the commands.
+session in its own `herdr worktree`. Load the herdr skill for the commands;
+any pane you open for it follows the one-tab rule above.
 
 - **Ask me before spawning one.** Each is a full Claude session spending real
   tokens; that's my call, not yours.
