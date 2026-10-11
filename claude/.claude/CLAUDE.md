@@ -1,29 +1,21 @@
 # Git workflow
 
-- **First commit/push/PR request of a session → ask:** commit to the current
-  branch, or branch out first? (Recommended on `dev`/`main`: branch out.) The
-  answer holds for the rest of the session.
-- **New branches:** off the current branch, named `<type>/<name>` by
-  Conventional Commits type — `feat/`, `fix/`, `chore/`, `docs/`, etc.
-- **Already on a non-base branch:** that is the working branch — keep
-  committing there. Base branch: `dev` if it exists, else `main`.
+- **On a base branch** (`dev` if it exists, else `main`): branch out before the
+  first commit — off the current branch, named `<type>/<name>` by Conventional
+  Commits type (`feat/`, `fix/`, `chore/`, `docs/`, etc.). Don't ask.
+- **On any other branch:** that is the working branch — keep committing there.
+- A repo's own instructions (e.g. "commit directly to `main`") override both.
 - **After every commit:** announce what was committed and to which branch.
 - **Never push without my approval.** A commit stops at the commit; before any
   push, ask "push to `<branch>`?" and wait.
 - **Integrate via PR**, not direct pushes to `dev`/`main`. PR description:
   what changed and why, no filler.
 
-# Triggers
-
-- "git status" → show: current branch · commits made this session ·
-  ahead/behind `origin/<branch>` (pushed vs local-only).
-
 # Commits
 
 - Conventional Commits: `type(scope): subject` — imperative subject, scope
   optional.
-- Subject line only, no body. No `Co-Authored-By` trailer (also enforced in
-  `settings.json`).
+- Subject line only, no body. No `Co-Authored-By` trailer.
 
 # Code comments
 
@@ -31,6 +23,9 @@
 - Comment the non-obvious "why"; never restate what the code says.
 
 # Herdr
+
+**Applies only when `$HERDR_ENV` is `1`** — otherwise you're not inside herdr;
+skip this section.
 
 You run inside herdr, my terminal workspace manager for AI agents. `herdr` is on
 PATH and talks to the running server over a socket. Subcommands emit JSON on
@@ -84,16 +79,10 @@ Three traps, each verified the hard way:
 ## Parallel agents
 
 For genuinely independent work too big for a subagent — a real sibling Claude
-session in its own worktree:
+session in its own `herdr worktree`. Load the herdr skill for the commands.
 
-1. `herdr worktree create --branch <type>/<name> --cwd <repo> --no-focus --json`
-2. `herdr agent start <name> --kind claude --pane <pane_id> --timeout 60000`
-   — the pane must be sitting at an interactive shell prompt.
-3. `herdr agent prompt <pane_id> "<task>" --wait --until idle --timeout <ms>`
-4. `herdr agent read <pane_id> --lines 60` to collect the result.
-
-- **All agent targets are `pane_id`s** (`w3:p1`) — never the agent session UUID
-  from `agent list`, which `agent read` rejects as `agent_not_found`.
 - **Ask me before spawning one.** Each is a full Claude session spending real
   tokens; that's my call, not yours.
+- **All agent targets are `pane_id`s** (`w3:p1`) — never the agent session UUID
+  from `agent list`, which `agent read` rejects as `agent_not_found`.
 - Branches follow the same `<type>/<name>` convention as the git workflow above.

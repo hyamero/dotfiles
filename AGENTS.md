@@ -24,11 +24,16 @@ See README.md for install; the gotchas below cover the cross-platform details.
   move those back too, or WSL installs a Tailscale daemon it never uses.
   Linux also refuses untrusted third-party taps until `brew trust <tap>` is run.
 - **`settings.json` hooks must tolerate a missing target.** herdr's
-  `herdr-agent-state.sh` and the `.orca` hooks are untracked, machine-local
-  files. Every hook referencing one is wrapped in `[ -f … ] && … || true`; drop
-  the guard and every session on the other machine fires a failing hook.
-  `statusline.sh` is tracked (claude package) but keeps its guard, so a
-  half-stowed setup still starts cleanly.
+  `herdr-agent-state.sh` is an untracked, machine-local file, so its hook is
+  wrapped in `[ -f … ] && … || true`; drop the guard and every session on the
+  other machine fires a failing hook. `statusline.sh` is tracked (claude
+  package) but keeps its guard, so a half-stowed setup still starts cleanly.
+- **`settings.json` is in a public repo, and `autoMode` can only live there.**
+  Claude Code reads `autoMode` solely from `~/.claude/settings.json` (not
+  project settings), which is this repo's tracked file. Keep its entries
+  generic — no secret names, `.env` paths, or private-repo internals — and
+  always include `"$defaults"`. `/auto-mode-setup` writes a detailed,
+  repo-specific block there without `"$defaults"`; trim it before committing.
 - **Per-machine git settings go in `~/.gitconfig.local`**, included from the
   tracked `.gitconfig`. That includes the `[user]` identity and signing key, kept
   out of the public repo so a fork can't commit as me. Credential helpers in particular embed an absolute `gh`
