@@ -69,6 +69,10 @@ Decide, per change, whether a user would notice it.
 - **Internal** → do **not** itemize. Collapse all of it into one vague line:
   security, refactors, developer experience, tooling/CI, dependency bumps, tests,
   infra, and any performance work with no visible effect.
+- **Staff-only tools are internal**, however visible they are to staff: an admin
+  console customers never reach (in Referenta, everything under `apps/admin`)
+  goes into the catch-all. In a change that touches both, describe only the
+  product part.
 
 The internal catch-all line, verbatim (translate it if the notes use another
 language, and keep that translation consistent across releases):
