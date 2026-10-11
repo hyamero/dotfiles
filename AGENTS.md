@@ -97,7 +97,7 @@ See README.md for install; the gotchas below cover the cross-platform details.
 ## Workflow (this repo only)
 
 - Commit and push **directly to `main`** — solo project, no branch/PR. Overrides
-  the global ask-and-PR rule in `~/.claude/CLAUDE.md`.
+  the global branch-and-PR rules in `~/.claude/CLAUDE.md`.
 - Deleting **remote** branches needs explicit approval (auto-mode blocks it).
 
 ## Commands
