@@ -32,6 +32,18 @@ PATH and talks to the running server over a socket. Subcommands emit JSON on
 stdout; `pane read` emits plain text. **Every wait is indefinite without
 `--timeout`** — always pass one.
 
+**Herdr is the default for terminal layout, processes, worktrees, and sibling
+agents.** Load the herdr skill before the first herdr command of a session —
+its "only when the user mentions Herdr" trigger is overridden here. Where the
+skill and this file disagree, this file wins. To look up a command:
+
+- `herdr <group>` with no subcommand prints that group's usage (`tab`, `pane`,
+  `worktree`, `workspace`, `agent`, `notification`). `--help` on a subcommand
+  does NOT work — it prints the top-level help.
+- `herdr api schema --json` has every method's exact params.
+- Never run bare `herdr` (attaches the TUI) or probe a mutating command by
+  leaving out arguments — `create` commands run with defaults.
+
 ## Notify me
 
 - On finishing work I'm probably not watching, or when blocked and needing my
@@ -89,11 +101,35 @@ Three traps, each verified the hard way:
 - **`pane read` defaults to `--source recent`, which is often empty.** Use
   `--source visible`.
 
+## Worktrees go through herdr
+
+Create worktrees with `herdr worktree`, never `git worktree add`, the
+`EnterWorktree` tool, or a skill's git fallback — herdr then tracks the checkout
+and gives it a visible workspace. (create / rename / list / remove verified;
+`--base` and `open` are from `herdr worktree` usage only.)
+
+- `herdr worktree create --cwd <repo> --branch <type>/<name> --label "<repo>: <name>" --no-focus`
+  (`--base <ref>` to branch from something other than `HEAD`). It creates a
+  **new workspace** labeled `--label`, checked out at
+  `~/.herdr/worktrees/<repo>/<branch-slug>`, with one tab and a shell pane at
+  that path → `.result.workspace.workspace_id`, `.result.tab.tab_id`,
+  `.result.root_pane.pane_id`.
+- That tab comes labeled `1` — rename it: `herdr tab rename <tab_id> "<purpose>"`,
+  and label its panes as above. Panes for work in the worktree go in *its*
+  workspace, not your session tab.
+- `herdr worktree list --cwd <repo>` shows checkouts and their workspaces;
+  `herdr worktree open --cwd <repo> --branch <name>` reopens one.
+- `herdr worktree remove --workspace <workspace_id>` deletes the checkout and
+  closes its workspace but **keeps the branch** — delete that with git only once
+  it's merged or I say so. Add `--force` only with my OK (discards changes).
+- Never pass `--trust-repository` on your own; it's for repos I've verified.
+
 ## Parallel agents
 
 For genuinely independent work too big for a subagent — a real sibling Claude
-session in its own `herdr worktree`. Load the herdr skill for the commands;
-any pane you open for it follows the one-tab rule above.
+session in its own herdr worktree: create it as above, then
+`herdr agent start <name> --kind claude --pane <root_pane_id> --timeout 60000`
+in the worktree's root pane.
 
 - **Ask me before spawning one.** Each is a full Claude session spending real
   tokens; that's my call, not yours.
