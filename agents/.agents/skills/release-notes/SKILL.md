@@ -73,11 +73,25 @@ Decide, per change, whether a user would notice it.
   console customers never reach (in Referenta, everything under `apps/admin`)
   goes into the catch-all. In a change that touches both, describe only the
   product part.
+- **A flag-gated feature is user-facing**, with an availability note. Work that
+  is complete and reachable in the product but gated by a rollout flag gets its
+  normal section, plus the availability line below, in italics, once per
+  section, directly under the section's framing sentence. Do not drop it into
+  the catch-all, and do not name the flag or guess at the rollout percentage.
+- **Never mention a feature that does not exist for users.** A feature whose
+  entry point is not shipped, or that is only partially merged in this range, is
+  internal. No withdrawal notices, no "coming soon". A flag alone does not make
+  something incomplete; check whether the entry point is in the tree. If you
+  cannot tell whether the feature is finished, treat it as internal.
 
 The internal catch-all line, verbatim (translate it if the notes use another
 language, and keep that translation consistent across releases):
 
 - `Internal architecture and developer-experience improvements.`
+
+The availability line for a flag-gated section, same translation rule:
+
+- `*This feature is being rolled out gradually and may not be available in your organization yet.*`
 
 ### 5. Write the notes
 
