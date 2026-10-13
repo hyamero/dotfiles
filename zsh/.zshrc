@@ -48,3 +48,32 @@ fi
 
 # Machine-local overrides (untracked, gitignored via *.local).
 [ -s "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# WSL: flag the prompt and terminal title whenever cwd is on the Windows drive
+# (/mnt/*), where every file op crosses the slow 9p bridge. Silent on the Linux
+# side, so the marker only ever means "careful". chpwd runs before precmd, so
+# the title is already correct on the prompt drawn right after a cd.
+if [[ -o interactive && -n "$WSL_DISTRO_NAME" ]]; then
+  autoload -Uz add-zsh-hook
+
+  # Captured after oh-my-zsh set them, so the SSH-shortened variant survives.
+  _WSL_TAB_TITLE_DEFAULT="$ZSH_THEME_TERM_TAB_TITLE_IDLE"
+  _WSL_TITLE_DEFAULT="$ZSH_THEME_TERM_TITLE_IDLE"
+
+  _wsl_winfs_mark() {
+    if [[ "$PWD" == /mnt/* ]]; then
+      _WSL_WINFS_PROMPT="%B%F{red}[win]%f%b "
+      ZSH_THEME_TERM_TAB_TITLE_IDLE="[win] $_WSL_TAB_TITLE_DEFAULT"
+      ZSH_THEME_TERM_TITLE_IDLE="[win] $_WSL_TITLE_DEFAULT"
+    else
+      _WSL_WINFS_PROMPT=""
+      ZSH_THEME_TERM_TAB_TITLE_IDLE="$_WSL_TAB_TITLE_DEFAULT"
+      ZSH_THEME_TERM_TITLE_IDLE="$_WSL_TITLE_DEFAULT"
+    fi
+  }
+  add-zsh-hook chpwd _wsl_winfs_mark
+  _wsl_winfs_mark
+
+  setopt prompt_subst
+  PROMPT='${_WSL_WINFS_PROMPT}'"$PROMPT"
+fi
