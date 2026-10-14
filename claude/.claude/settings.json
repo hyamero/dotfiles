@@ -193,7 +193,7 @@
   "autoMode": {
     "environment": [
       "$defaults",
-      "Source control: github.com/hyamero (personal; includes the public hyamero/dotfiles repo) and github.com/Referenta (work, private) — repos under both are trusted push destinations",
+      "Source control: github.com/hyamero (personal; includes the public hyamero/dotfiles repo) and my work GitHub org — repos under both are trusted push destinations",
       "Key internal services: Vercel (incl. ai-gateway.vercel.sh), hosted Supabase, Linear (linear.app)",
       "Org-specific CLIs: herdr (terminal workspace manager for AI agents — panes, agents, notifications); routine on this machine"
     ]
