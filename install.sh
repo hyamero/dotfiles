@@ -2,13 +2,14 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(zsh git claude agents ghostty)
+PACKAGES=(zsh git claude agents)
 
 # herdr's prefix key differs per platform and its config has no include or
 # conditional support, so the two variants ship as separate stow packages.
 # Both provide .config/herdr/config.toml, so exactly one may be stowed.
+# Ghostty has no Linux build to run under WSL, so it's macOS-only too.
 if [ "$(uname -s)" = "Darwin" ]; then
-  PACKAGES+=(herdr)
+  PACKAGES+=(herdr ghostty)
 else
   PACKAGES+=(herdr-linux)
 fi
@@ -41,6 +42,17 @@ if [ "$(uname -s)" = "Darwin" ] && [ -f "$DOTFILES_DIR/Brewfile.macos" ]; then
   brew bundle --file="$DOTFILES_DIR/Brewfile.macos"
 fi
 
+# 2b. Oh My Zsh and the custom plugins .zshrc loads; without them every new
+#     shell errors out. --keep-zshrc stops the installer replacing the stowed
+#     .zshrc, RUNZSH=no stops it dropping into a shell mid-script.
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
+fi
+omz_plugins="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+for repo in zsh-users/zsh-autosuggestions zsh-users/zsh-syntax-highlighting; do
+  [ -d "$omz_plugins/${repo#*/}" ] || git clone --depth 1 "https://github.com/$repo" "$omz_plugins/${repo#*/}"
+done
+
 # 3. Back up conflicting files (real files, foreign or dangling symlinks),
 #    then stow each package. Skip paths that already resolve to the repo
 #    file (-ef): already stowed, directly or through a folded dir symlink.
@@ -63,17 +75,19 @@ for pkg in "${PACKAGES[@]}"; do
 done
 
 # 4. Claude skill glue: ~/.claude/skills is a real dir of relative symlinks
-#    into ~/.agents/skills (only created if missing — existing setups untouched)
-if [ ! -d "$HOME/.claude/skills" ]; then
-  mkdir -p "$HOME/.claude/skills"
-  shopt -s nullglob
-  for skill in "$HOME"/.agents/skills/*/; do
-    name="$(basename "$skill")"
-    ln -s "../../.agents/skills/$name" "$HOME/.claude/skills/$name"
+#    into ~/.agents/skills. Only missing links are added, so re-running picks
+#    up new skills without touching existing entries.
+mkdir -p "$HOME/.claude/skills"
+shopt -s nullglob
+for skill in "$HOME"/.agents/skills/*/; do
+  name="$(basename "$skill")"
+  link="$HOME/.claude/skills/$name"
+  if [ ! -e "$link" ] && [ ! -L "$link" ]; then
+    ln -s "../../.agents/skills/$name" "$link"
     echo "linked skill: $name"
-  done
-  shopt -u nullglob
-fi
+  fi
+done
+shopt -u nullglob
 
 # 5. Claude plugins: reinstall the tracked list. claude-plugins.list is
 #    generated from installed_plugins.json (see AGENTS.md) — we don't read

@@ -27,9 +27,10 @@ git clone https://github.com/hyamero/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install.sh
 ```
 
-The script installs Homebrew and the `Brewfile` packages, backs up conflicting
-files as `*.pre-stow`, and stows every package into `$HOME`. Oh My Zsh, its
-plugins and the font are installed separately.
+The script installs Homebrew, the `Brewfile` packages (plus `Brewfile.macos`
+and the font on a Mac), Oh My Zsh and its plugins, backs up conflicting files
+as `*.pre-stow`, and stows every package into `$HOME`. `ghostty` and `herdr`
+are stowed only on macOS; Linux gets `herdr-linux` instead.
 
 To add a file later, put it in a package at its `$HOME`-relative path and run
 `stow -t "$HOME" --restow <package>`.
