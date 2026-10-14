@@ -9,5 +9,6 @@ tap "omsimos/tap"
 brew "tailscale"
 brew "omsimos/tap/nosleep", trusted: true
 
+cask "font-victor-mono-nerd-font"
 cask "openusage"
 cask "unnaturalscrollwheels"

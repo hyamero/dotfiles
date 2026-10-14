@@ -20,5 +20,6 @@ brew "supabase", link: false
 brew "tmux"
 brew "zsh"
 brew "blankeos/tap/lazygitrs", trusted: true
+brew "libsql/sqld/sqld"
 brew "rjyo/moshi/moshi-hook"
 brew "tursodatabase/tap/turso"
