@@ -13,6 +13,8 @@ fi
 # Oh My Zsh
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
+# Sourcing nvm costs ~1s per shell; load it on first nvm/node/npm/pnpm call.
+zstyle ':omz:plugins:nvm' lazy yes
 plugins=(git fzf z zsh-autosuggestions zsh-syntax-highlighting nvm npm bun)
 source $ZSH/oh-my-zsh.sh
 
@@ -33,9 +35,15 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "$HOME/.turso/env" ] && . "$HOME/.turso/env"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Use nvm's default Node (24.x) so corepack's pnpm shim is on PATH ahead of the
-# stale standalone pnpm. Must run after all PATH edits above.
-nvm use default --silent 2>/dev/null
+# Put nvm's default Node on PATH without loading nvm, so corepack's pnpm shim
+# wins over the stale standalone pnpm and non-interactive callers still find
+# node. The alias may be partial ("24"), so take the newest matching install.
+# Must run after all PATH edits above.
+if [[ -n $NVM_DIR && -r $NVM_DIR/alias/default ]]; then
+  _nvm_bins=($NVM_DIR/versions/node/v$(<$NVM_DIR/alias/default){,.*}/bin(N/nOn))
+  (( $#_nvm_bins )) && path=($_nvm_bins[1] $path)
+  unset _nvm_bins
+fi
 
 # WSL: a shell launched from the Windows side (`wsl` in PowerShell, an editor's
 # integrated terminal, a multiplexer whose server started there) inherits the
