@@ -4,11 +4,11 @@
     "pr": ""
   },
   "permissions": {
-    "defaultMode": "auto",
     "ask": [
       "Bash(git push *)",
       "Bash(gh pr create *)"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "model": "opus",
   "skillOverrides": {
@@ -180,7 +180,7 @@
       "effortLevel": "medium"
     },
     "claude-opus-5-5": {
-      "effortLevel": "high"
+      "effortLevel": "medium"
     }
   },
   "voice": {
