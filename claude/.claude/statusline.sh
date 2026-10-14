@@ -9,6 +9,13 @@
 
 payload=$(cat)
 
+# Every field is parsed with jq; without it, show the directory alone rather
+# than a line of errors.
+if ! command -v jq >/dev/null 2>&1; then
+  printf '%s' "$(basename "$PWD")"
+  exit 0
+fi
+
 dir=$(printf '%s' "$payload" | jq -r '.workspace.current_dir // .cwd // empty')
 model=$(printf '%s' "$payload" | jq -r '.model.display_name // empty')
 [ -n "$dir" ] || dir=$PWD
