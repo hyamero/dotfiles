@@ -7,6 +7,6 @@ elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
 fi
 
 # python.org framework build (macOS only).
-if [[ -d /Library/Frameworks/Python.framework/Versions/3.13/bin ]]; then
-  export PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:$PATH"
+if [[ -d /Library/Frameworks/Python.framework/Versions/Current/bin ]]; then
+  export PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH"
 fi
