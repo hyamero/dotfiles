@@ -9,9 +9,10 @@ overrides this section.
   there.
 - **Commit:** `type(scope): subject` — imperative, scope optional, subject line
   only. After each commit, report its subject and branch.
-- **Push:** only after I answer yes to "push to `<branch>`?".
+- **Push:** only after I answer yes to "push to `<branch>`?". That yes also
+  covers opening the PR for that branch — don't ask a second time.
 - **Integrate:** into `dev`/`main` via PR; the description says what changed
-  and why.
+  and why. Opening one without an approved push still needs a yes.
 
 # Code comments
 
