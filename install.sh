@@ -68,6 +68,10 @@ backup_conflicts() {
   done < <(cd "$DOTFILES_DIR/$pkg" && find . -type f)
 }
 
+# Pre-create so stow links files into it rather than folding the whole dir
+# into the repo, where herdr would then drop its untracked hook script.
+mkdir -p "$HOME/.claude/hooks"
+
 for pkg in "${PACKAGES[@]}"; do
   backup_conflicts "$pkg"
   stow -d "$DOTFILES_DIR" -t "$HOME" --restow "$pkg"

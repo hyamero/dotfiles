@@ -4,6 +4,8 @@ docs/superpowers/
 *.bak
 # machine-local overrides, e.g. .zshrc.local
 *.local
+# herdr-managed; lands here only if ~/.claude/hooks was stow-folded
+claude/.claude/hooks/herdr-agent-state.sh
 
 # Skills are local by default; only the allowlisted general ones are tracked.
 agents/.agents/skills/*
