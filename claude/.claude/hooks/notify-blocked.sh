@@ -42,7 +42,8 @@ if [ "${HERDR_ENV:-}" = "1" ] && command -v herdr >/dev/null; then
   # first. The CLI has no `workspace move`, so call the socket API directly.
   ws="${HERDR_WORKSPACE_ID:-${HERDR_PANE_ID%%:*}}"
   if [ -n "$ws" ] && [ -n "${HERDR_SOCKET_PATH:-}" ] && command -v python3 >/dev/null; then
-    python3 - "$ws" <<'PY' || true
+    # -I: hooks run in the session's cwd; keep a repo's json.py etc. off sys.path.
+    python3 -I - "$ws" <<'PY' || true
 import json, os, socket, sys
 s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 s.settimeout(1)
