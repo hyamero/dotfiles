@@ -19,9 +19,6 @@
     ],
     "defaultMode": "auto",
     "allow": [
-      "Bash(git push)",
-      "Bash(git push origin *)",
-      "Bash(git push -u origin *)",
       "Bash(gh pr create *)"
     ]
   },
@@ -72,6 +69,16 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git push*)",
+            "command": "f=\"$HOME/.claude/hooks/allow-safe-push.sh\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+          }
+        ]
+      },
       {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
