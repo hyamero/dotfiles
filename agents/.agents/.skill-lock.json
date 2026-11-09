@@ -280,15 +280,6 @@
       "installedAt": "2026-08-24T11:57:30.184Z",
       "updatedAt": "2026-09-28T12:00:11.822Z"
     },
-    "browser-control": {
-      "source": "anomalyco/browser-control",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/anomalyco/browser-control.git",
-      "skillPath": "skills/browser-control/SKILL.md",
-      "skillFolderHash": "82e22be706cd8d4c759f589ca40d8c2fbb1b0da8",
-      "installedAt": "2026-09-28T11:37:20.218Z",
-      "updatedAt": "2026-10-13T17:40:39.519Z"
-    },
     "stackmap": {
       "source": "omsimos/stackmap",
       "sourceType": "github",
