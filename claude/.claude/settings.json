@@ -5,9 +5,17 @@
   },
   "permissions": {
     "ask": [
-      "Bash(git push *)"
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f *)",
+      "Bash(git push * -f)"
     ],
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(git push *)",
+      "Bash(gh pr create *)"
+    ]
   },
   "model": "opus",
   "skillOverrides": {
