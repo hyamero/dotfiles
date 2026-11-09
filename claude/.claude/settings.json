@@ -32,6 +32,16 @@
             "async": true
           }
         ]
+      },
+      {
+        "matcher": "permission_prompt|idle_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.claude/hooks/notify-blocked.sh\"; [ -x \"$f\" ] || exit 0; exec \"$f\"",
+            "async": true
+          }
+        ]
       }
     ],
     "PermissionRequest": [
@@ -71,6 +81,16 @@
           {
             "type": "command",
             "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__browse__execute|AskUserQuestion|ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"$HOME/.claude/hooks/notify-blocked.sh\"; [ -x \"$f\" ] || exit 0; exec \"$f\"",
             "async": true
           }
         ]
