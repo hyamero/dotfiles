@@ -38,6 +38,21 @@ body="${body:0:200}"
 
 if [ "${HERDR_ENV:-}" = "1" ] && command -v herdr >/dev/null; then
   herdr notification show "$title" --body "$body" --sound request >/dev/null
+  # Float this workspace to the top of the sidebar so the one waiting on me is
+  # first. The CLI has no `workspace move`, so call the socket API directly.
+  ws="${HERDR_WORKSPACE_ID:-${HERDR_PANE_ID%%:*}}"
+  if [ -n "$ws" ] && [ -n "${HERDR_SOCKET_PATH:-}" ] && command -v python3 >/dev/null; then
+    python3 - "$ws" <<'PY' || true
+import json, os, socket, sys
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.settimeout(1)
+s.connect(os.environ["HERDR_SOCKET_PATH"])
+req = {"id": "notify-blocked", "method": "workspace.move",
+       "params": {"workspace_id": sys.argv[1], "insert_index": 0}}
+s.sendall((json.dumps(req) + "\n").encode())
+s.recv(65536)
+PY
+  fi
 elif [ "$(uname -s)" = "Darwin" ]; then
   # Pass text as argv so quotes in the message can't break the AppleScript.
   osascript -e 'on run a' -e 'display notification (item 2 of a) with title (item 1 of a) sound name "Glass"' -e 'end run' "$title" "$body"
