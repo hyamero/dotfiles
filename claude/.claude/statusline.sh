@@ -16,8 +16,21 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-dir=$(printf '%s' "$payload" | jq -r '.workspace.current_dir // .cwd // empty')
-model=$(printf '%s' "$payload" | jq -r '.model.display_name // empty')
+# This runs on every render, so read all fields in one jq call. @sh quotes each
+# value for the shell, which leaves the eval nothing to do but assign.
+#   ctx    null until the session's first API response
+#   five   rate_limits only exists for Pro/Max subscribers
+#   effort absent when the model doesn't support the effort parameter
+dir='' model='' effort='' ctx='' five='' resets=''
+eval "$(printf '%s' "$payload" | jq -r '
+  def pct: if . == null then "" else floor end;
+  @sh "dir=\(.workspace.current_dir // .cwd // "")",
+  @sh "model=\(.model.display_name // "")",
+  @sh "effort=\(.effort.level // "")",
+  @sh "ctx=\(.context_window.used_percentage | pct)",
+  @sh "five=\(.rate_limits.five_hour.used_percentage | pct)",
+  @sh "resets=\(.rate_limits.five_hour.resets_at // "")"
+' 2>/dev/null)"
 [ -n "$dir" ] || dir=$PWD
 
 bgreen='\033[1;32m'; cyan='\033[36m'; bblue='\033[1;34m'
@@ -33,32 +46,26 @@ if branch=$(git -C "$dir" symbolic-ref --quiet --short HEAD 2>/dev/null) \
   || branch=$(git -C "$dir" describe --tags --exact-match HEAD 2>/dev/null) \
   || branch=$(git -C "$dir" rev-parse --short HEAD 2>/dev/null); then
   git_part=" ${bblue}git:(${red}${branch}${reset}"
-  if [ -n "$(git -C "$dir" status --porcelain 2>/dev/null)" ]; then
+  # --no-optional-locks: a background status must not take index.lock and
+  # collide with the git commands the session itself is running.
+  if [ -n "$(git -C "$dir" --no-optional-locks status --porcelain 2>/dev/null)" ]; then
     git_part="${git_part}${blue}) ${yellow}✗${reset}"
   else
     git_part="${git_part}${blue})${reset}"
   fi
 fi
 
-# Absent when the model doesn't support the effort parameter.
-effort=$(printf '%s' "$payload" | jq -r '.effort.level // empty')
 case $effort in
   low) pips='●○○○○' ;; medium) pips='●●○○○' ;; high) pips='●●●○○' ;;
   xhigh) pips='●●●●○' ;; max) pips='●●●●●' ;; *) pips='' ;;
 esac
 
-# Null until the session's first API response.
-ctx=$(printf '%s' "$payload" | jq -r '.context_window.used_percentage // empty | floor')
-
-# rate_limits only exists for Pro/Max subscribers.
-five=$(printf '%s' "$payload" | jq -r '.rate_limits.five_hour.used_percentage // empty | floor')
 if [ -n "$five" ]; then
   # The label is the countdown to the window's reset: whole hours, then minutes
   # in the last hour. Falls back to "5h" without a usable resets_at.
   # Shell arithmetic rather than `date -r`/`date -d`, which differ between
   # macOS and GNU.
   label="5h"
-  resets=$(printf '%s' "$payload" | jq -r '.rate_limits.five_hour.resets_at // empty')
   if [ -n "$resets" ]; then
     left=$((resets - $(date +%s)))
     if [ "$left" -ge 3600 ]; then
@@ -116,22 +123,23 @@ render() {
   printf '%s' "$_l"
 }
 
-# Visible width: colour codes are still literal `\033[…m` text here, so strip
-# them before counting; jq counts code points, which every glyph used is.
-width() {
-  printf '%s' "$1" | jq -Rrs 'gsub("\\\\033\\[[0-9;]*m"; "") | length'
-}
-
 # COLUMNS is set by Claude Code (tput can't see the terminal from here). The
 # 2-column margin leaves room for the status row's padding.
 max=$(( ${COLUMNS:-0} - 2 ))
-tier=0
-line=$(render 0)
 if [ "${COLUMNS:-0}" -gt 0 ]; then
-  while [ "$tier" -lt 4 ] && [ "$(width "$line")" -gt "$max" ]; do
-    tier=$((tier + 1))
-    line=$(render "$tier")
-  done
+  # Render every tier, one per line, and let a single jq call pick the first
+  # that fits, or the narrowest if none does. Visible width: colour codes are
+  # still literal `\033[…m` text here, so strip them before counting; jq
+  # counts code points, which every glyph used is.
+  line=$(
+    for tier in 0 1 2 3 4; do render "$tier"; echo; done \
+      | jq -Rrn --argjson max "$max" '
+          [inputs] as $tiers
+          | [$tiers[] | select((gsub("\\\\033\\[[0-9;]*m"; "") | length) <= $max)]
+          | .[0] // $tiers[-1]'
+  )
+else
+  line=$(render 0)
 fi
 
 printf '%b' "$line"
