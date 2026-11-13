@@ -10,8 +10,10 @@ See README.md for install; the gotchas below cover the cross-platform details.
 - **Never commit an absolute `$HOME` path.** Two machines, two homes
   (`/Users/hyamero` vs. `/home/hyamero`). Use `$HOME` in `settings.json` hook
   commands, `~` in `.gitconfig`, `$HOME` in shell files. A hardcoded
-  `/Users/hyamero/...` silently breaks only on the other box — grep for it
-  before committing.
+  `/Users/hyamero/...` silently breaks only on the other box. Two checks share
+  the pattern in `scripts/home-paths.sh`: the Claude hook `block-home-paths.sh`
+  (Edit/Write only) and a lefthook pre-commit hook that covers everything else.
+  The pre-commit hook exists only after `lefthook install` (install.sh runs it).
 - **Homebrew's prefix differs per platform** (`/opt/homebrew` vs.
   `/home/linuxbrew/.linuxbrew`). `.zprofile`, `.zshrc` and `install.sh` each
   probe for both; don't collapse them back to one path. `.zshrc` needs its own
@@ -50,7 +52,9 @@ See README.md for install; the gotchas below cover the cross-platform details.
   `agents/.agents/skills/*` and re-includes a short list of general skills with
   `!` lines. A newly installed skill stays untracked (it still works, via the
   folded `~/.agents/skills` symlink); to share it, add a `!` line. Keep work- or
-  stack-specific skills off the list.
+  stack-specific skills off the list. `.skill-lock.json` is per-machine and
+  untracked: it lists the local skills too, so a shared copy is wrong on the
+  other box.
 - **install.sh `backup_conflicts` needs the `-ef` guard.** Files inside a folded
   directory symlink (e.g. `~/.agents/skills`) are real files reached *through*
   the link; a naive `[ -e ] && [ ! -L ]` backup renames repo files. The
@@ -79,6 +83,14 @@ See README.md for install; the gotchas below cover the cross-platform details.
   ~/.config/herdr/config.toml` should still be a symlink; if it's a real file,
   move it back into `herdr/.config/herdr/` and `stow -t "$HOME" --restow herdr`.
   Only `config.toml` is tracked — logs, sockets, and `session.json` stay local.
+  `~/.config/herdr` must be a real directory: install.sh pre-creates it, because
+  a stow-folded one would put that runtime state inside the repo (`.gitignore`
+  covers it as a backstop).
+- **Stow links every file in a package, tracked or not.** A stray `*.bak` or
+  `*.pre-stow` next to a config gets linked into `$HOME`. `claude/` has a
+  `.stow-local-ignore` for those; note its patterns match the whole file name
+  (`.+\.bak`, not `\.bak$`), and that stow leaves an already-made link behind
+  when a file becomes ignored — remove it by hand.
 - **Ghostty config lives at `.config/ghostty`, not Application Support.** macOS
   Ghostty reads `~/Library/Application Support/com.mitchellh.ghostty/config`
   too, and a file there wins over the XDG path — so that copy is parked as
@@ -97,7 +109,8 @@ See README.md for install; the gotchas below cover the cross-platform details.
 ## Workflow (this repo only)
 
 - Commit and push **directly to `main`** — solo project, no branch/PR. Overrides
-  the global branch-and-PR rules in `~/.claude/CLAUDE.md`.
+  the global branch-and-PR rules in `~/.claude/CLAUDE.md`, but not its push
+  rule: still ask "push to `main`?" before each push.
 - Deleting **remote** branches needs explicit approval (auto-mode blocks it).
 
 ## Commands

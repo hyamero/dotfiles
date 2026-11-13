@@ -31,7 +31,7 @@ for agents, and herdr owns your terminal work:
   `EnterWorktree`, so herdr tracks them.
 - **Sibling agents** (full Claude sessions in a worktree) need my OK first: each
   spends real tokens.
-- **Notify me** when a task that ran for minutes finishes, or when you're
-  blocked on my input:
-  `herdr notification show "<title>" --body "<one line>" --sound done` (use
-  `--sound request` when you need an answer).
+- **Notify me** when a task that ran for minutes finishes:
+  `herdr notification show "<title>" --body "<one line>" --sound done`.
+  A hook already notifies me when you're blocked on my input (a question, a
+  permission prompt, an idle turn), so don't send a second one for that.

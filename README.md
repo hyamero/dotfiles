@@ -30,7 +30,8 @@ cd ~/dotfiles && ./install.sh
 The script installs Homebrew, the `Brewfile` packages (plus `Brewfile.macos`
 and the font on a Mac), Oh My Zsh and its plugins, backs up conflicting files
 as `*.pre-stow`, and stows every package into `$HOME`. `ghostty` and `herdr`
-are stowed only on macOS; Linux gets `herdr-linux` instead.
+are stowed only on macOS; Linux gets `herdr-linux` instead. It also installs a
+pre-commit hook that rejects commits adding an absolute home path.
 
 To add a file later, put it in a package at its `$HOME`-relative path and run
 `stow -t "$HOME" --restow <package>`.
