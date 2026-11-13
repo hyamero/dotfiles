@@ -1,0 +1,5 @@
+# Enabled per clone by `lefthook install` (install.sh runs it).
+pre-commit:
+  commands:
+    home-paths:
+      run: scripts/home-paths.sh --staged

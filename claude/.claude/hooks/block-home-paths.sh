@@ -13,13 +13,17 @@ case "$file" in *.md) exit 0 ;; esac
 
 # Resolve symlinks: ~/.claude/settings.json is stowed into the repo.
 real="$(realpath "$file" 2>/dev/null || echo "$file")"
-top="$(git -C "$(dirname "$real")" rev-parse --show-toplevel 2>/dev/null)" || exit 0
+# A new file's directory may not exist yet; ask git from the nearest one that does.
+dir="$(dirname "$real")"
+while [ ! -d "$dir" ] && [ "$dir" != / ] && [ "$dir" != . ]; do dir="$(dirname "$dir")"; done
+top="$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)" || exit 0
 [ -f "$top/claude/.claude/settings.json" ] && [ -f "$top/install.sh" ] || exit 0
+# The pattern lives in the repo so the pre-commit check uses the same one.
+[ -x "$top/scripts/home-paths.sh" ] || exit 0
 
 new="$(jq -r '[.tool_input.content, .tool_input.new_string, (.tool_input.edits // [] | .[].new_string)] | map(select(. != null)) | join("\n")' <<<"$input")"
 
-# /home/linuxbrew is Linux Homebrew's fixed prefix, not a user home.
-hits="$(grep -oE '/(Users|home)/[A-Za-z0-9._-]+' <<<"$new" | grep -v '^/home/linuxbrew$' | sort -u)"
+hits="$("$top/scripts/home-paths.sh" <<<"$new")"
 [ -z "$hits" ] && exit 0
 
 {
