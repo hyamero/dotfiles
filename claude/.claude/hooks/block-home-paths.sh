@@ -17,13 +17,18 @@ real="$(realpath "$file" 2>/dev/null || echo "$file")"
 dir="$(dirname "$real")"
 while [ ! -d "$dir" ] && [ "$dir" != / ] && [ "$dir" != . ]; do dir="$(dirname "$dir")"; done
 top="$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null)" || exit 0
-[ -f "$top/claude/.claude/settings.json" ] && [ -f "$top/install.sh" ] || exit 0
+
+# The dotfiles checkout is the one this hook is stowed from. Find it through
+# the hook's own symlink, never through the edited file: the scanner below is
+# executed, and another repo must not be able to supply its own.
+repo="$(cd "$(dirname "$(realpath "$0" 2>/dev/null || echo "$0")")/../../.." 2>/dev/null && pwd -P)" || exit 0
+[ "$top" -ef "$repo" ] || exit 0
 # The pattern lives in the repo so the pre-commit check uses the same one.
-[ -x "$top/scripts/home-paths.sh" ] || exit 0
+[ -x "$repo/scripts/home-paths.sh" ] || exit 0
 
 new="$(jq -r '[.tool_input.content, .tool_input.new_string, (.tool_input.edits // [] | .[].new_string)] | map(select(. != null)) | join("\n")' <<<"$input")"
 
-hits="$("$top/scripts/home-paths.sh" <<<"$new")"
+hits="$("$repo/scripts/home-paths.sh" <<<"$new")"
 [ -z "$hits" ] && exit 0
 
 {
