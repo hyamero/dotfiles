@@ -1,0 +1,4 @@
+# Stray backups are not config: *.bak from installers, *.pre-stow from install.sh.
+# Stow matches each pattern against the whole file name.
+.+\.bak
+.+\.pre-stow
