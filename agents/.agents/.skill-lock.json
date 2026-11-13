@@ -306,6 +306,15 @@
       "skillFolderHash": "cd88f8830b8452dde849fdb792b4abd04ebf2cf1",
       "installedAt": "2026-10-03T02:04:48.348Z",
       "updatedAt": "2026-10-03T02:04:48.348Z"
+    },
+    "stageshow": {
+      "source": "benjitaylor/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/benjitaylor/skills.git",
+      "skillPath": "stageshow/SKILL.md",
+      "skillFolderHash": "5f24a58c1b28ba9d208e576e3c6267ccd1fc1769",
+      "installedAt": "2026-11-02T04:12:28.569Z",
+      "updatedAt": "2026-11-02T04:12:28.569Z"
     }
   },
   "dismissed": {
@@ -317,6 +326,7 @@
     "codex",
     "cursor",
     "droid",
+    "fx",
     "gemini-cli",
     "github-copilot",
     "kilo",

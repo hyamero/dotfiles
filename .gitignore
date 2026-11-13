@@ -6,6 +6,15 @@ docs/superpowers/
 *.local
 # herdr-managed; lands here only if ~/.claude/hooks was stow-folded
 claude/.claude/hooks/herdr-agent-state.sh
+# herdr runtime state (logs, sockets, session.json); lands here only if
+# ~/.config/herdr was stow-folded
+herdr/.config/herdr/*
+!herdr/.config/herdr/config.toml
+herdr-linux/.config/herdr/*
+!herdr-linux/.config/herdr/config.toml
+
+# Per-machine skills-CLI state: it lists the local skills too.
+agents/.agents/.skill-lock.json
 
 # Skills are local by default; only the allowlisted general ones are tracked.
 agents/.agents/skills/*
