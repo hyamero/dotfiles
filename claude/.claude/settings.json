@@ -4,6 +4,17 @@
     "pr": ""
   },
   "permissions": {
+    "allow": [
+      "Bash(gh pr create *)",
+      "Bash(herdr pane read *)",
+      "Bash(herdr pane wait-output *)",
+      "Bash(herdr pane current *)",
+      "Bash(herdr agent list *)",
+      "Bash(herdr tab list *)",
+      "Bash(herdr pane list *)",
+      "Bash(herdr config check *)",
+      "Bash(herdr worktree list *)"
+    ],
     "ask": [
       "Bash(git push *--force*)",
       "Bash(git push -f*)",
@@ -17,12 +28,9 @@
       "Bash(git push * +*)",
       "Bash(git push * :*)"
     ],
-    "defaultMode": "auto",
-    "allow": [
-      "Bash(gh pr create *)"
-    ]
+    "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "fable",
   "skillOverrides": {
     "agents-sdk": "off",
     "cloudflare": "off",
@@ -41,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -62,7 +70,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": false
           }
         ]
@@ -74,8 +82,8 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git push*)",
-            "command": "f=\"$HOME/.claude/hooks/allow-safe-push.sh\"; [ -x \"$f\" ] || exit 0; exec \"$f\""
+            "command": "f=\"$HOME/.claude/hooks/allow-safe-push.sh\"; [ -x \"$f\" ] || exit 0; exec \"$f\"",
+            "if": "Bash(git push*)"
           }
         ]
       },
@@ -93,7 +101,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -103,7 +111,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -125,7 +133,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -135,7 +143,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -146,7 +154,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -167,7 +175,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -178,7 +186,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
@@ -189,7 +197,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -x \"$HOME/.local/bin/moshi-hook\" ] && \"$HOME/.local/bin/moshi-hook\" claude-hook || true",
+            "command": "command -v moshi-hook >/dev/null 2>&1 && moshi-hook claude-hook || true",
             "async": true
           }
         ]
