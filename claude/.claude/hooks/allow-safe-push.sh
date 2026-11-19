@@ -33,6 +33,8 @@ g() { git -C "${cwd:-.}" "$@" 2>/dev/null; }
 
 # Detached HEAD has no branch to check the destination against.
 branch="$(g symbolic-ref --quiet --short HEAD)" || exit 0
+# A branch may be named "+x", and pushing that name as a refspec is a force push.
+[[ "$branch" =~ ^[A-Za-z0-9._/-]+$ ]] || exit 0
 
 # No remote named: resolve the one git would pick, which need not be origin.
 if [ -z "$remote" ]; then
