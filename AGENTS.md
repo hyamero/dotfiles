@@ -1,7 +1,7 @@
 # dotfiles
 
 GNU Stow–managed dotfiles, shared between a **Mac** and a **WSL (Ubuntu)** box.
-Each top-level dir (`zsh/`, `git/`, `claude/`, `agents/`, `herdr/`, `herdr-linux/`, `ghostty/`)
+Each top-level dir (`zsh/`, `git/`, `claude/`, `codex/`, `agents/`, `herdr/`, `herdr-linux/`, `ghostty/`)
 is a stow *package* mirroring `$HOME`; stow symlinks its contents into place.
 See README.md for install; the gotchas below cover the cross-platform details.
 
@@ -86,6 +86,7 @@ See README.md for install; the gotchas below cover the cross-platform details.
   `~/.config/herdr` must be a real directory: install.sh pre-creates it, because
   a stow-folded one would put that runtime state inside the repo (`.gitignore`
   covers it as a backstop).
+- **Codex manages its live config locally.** Stow links only `~/.codex/AGENTS.md` from the `codex` package. The installer seeds `~/.codex/config.toml` from the portable `codex-config.toml` on first install. Keep authentication, project trust, plugin state, and desktop-generated settings in the local Codex directory.
 - **Stow links every file in a package, tracked or not.** A stray `*.bak` or
   `*.pre-stow` next to a config gets linked into `$HOME`. `claude/` has a
   `.stow-local-ignore` for those; note its patterns match the whole file name

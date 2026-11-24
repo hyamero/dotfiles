@@ -1,0 +1,6 @@
+sandbox_mode = "danger-full-access"
+approval_policy = "never"
+model = "gpt-6.2-sol"
+model_reasoning_effort = "medium"
+personality = "pragmatic"
+service_tier = "default"

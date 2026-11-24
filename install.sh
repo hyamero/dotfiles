@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES=(zsh git claude agents)
+PACKAGES=(zsh git claude codex agents)
 
 # herdr's prefix key differs per platform and its config has no include or
 # conditional support, so the two variants ship as separate stow packages.
@@ -88,13 +88,20 @@ backup_conflicts() {
 # Pre-create so stow links files into these rather than folding the whole dir
 # into the repo, where herdr would then drop its untracked hook script and its
 # runtime state (logs, sockets, session.json), and git its credentials file.
-mkdir -p "$HOME/.claude/hooks" "$HOME/.config/herdr" "$HOME/.config/git"
+mkdir -p "$HOME/.claude/hooks" "$HOME/.codex" "$HOME/.config/herdr" "$HOME/.config/git"
 
 for pkg in "${PACKAGES[@]}"; do
   backup_conflicts "$pkg"
   stow -d "$DOTFILES_DIR" -t "$HOME" --restow "$pkg"
   echo "stowed: $pkg"
 done
+
+# Codex clients add machine-specific settings to config.toml as they run.
+# Seed a local copy on first install and leave existing configs in place.
+if [ ! -e "$HOME/.codex/config.toml" ] && [ ! -L "$HOME/.codex/config.toml" ]; then
+  (umask 077; set -o noclobber; cat "$DOTFILES_DIR/codex-config.toml" > "$HOME/.codex/config.toml")
+  echo "created: $HOME/.codex/config.toml"
+fi
 
 # 4. Claude skill glue: ~/.claude/skills is a real dir of relative symlinks
 #    into ~/.agents/skills. Only missing links are added, so re-running picks

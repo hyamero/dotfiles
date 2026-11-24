@@ -4,6 +4,9 @@ docs/superpowers/
 *.bak
 # machine-local overrides, e.g. .zshrc.local
 *.local
+# Codex runtime files stay local. Stow manages the global instructions only.
+codex/.codex/*
+!codex/.codex/AGENTS.md
 # herdr-managed; lands here only if ~/.claude/hooks was stow-folded
 claude/.claude/hooks/herdr-agent-state.sh
 # herdr runtime state (logs, sockets, session.json); lands here only if

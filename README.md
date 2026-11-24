@@ -18,6 +18,7 @@ https://github.com/user-attachments/assets/3ae67c7f-76c7-44b0-ab5b-b2202182e7a5
 | `ghostty` | GitHub Dark Colorblind, VictorMono Nerd Font, a galaxy backdrop shader and a smearing caret |
 | `herdr` | [herdr](https://herdr.dev) workspace config (`herdr-linux` swaps the prefix key) |
 | `claude` | Claude Code settings and global instructions |
+| `codex` | Codex global instructions, with first-install defaults in `codex-config.toml` |
 | `agents` | A few general agent skills |
 
 ## Install
@@ -32,6 +33,8 @@ and the font on a Mac), Oh My Zsh and its plugins, backs up conflicting files
 as `*.pre-stow`, and stows every package into `$HOME`. `ghostty` and `herdr`
 are stowed only on macOS; Linux gets `herdr-linux` instead. It also installs a
 pre-commit hook that rejects commits adding an absolute home path.
+
+On first install, the script copies `codex-config.toml` to `~/.codex/config.toml` if that path is unused. The template enables Full Access and disables command approval prompts. Existing Codex settings stay local.
 
 To add a file later, put it in a package at its `$HOME`-relative path and run
 `stow -t "$HOME" --restow <package>`.
