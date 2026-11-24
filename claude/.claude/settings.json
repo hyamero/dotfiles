@@ -30,7 +30,6 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "fable",
   "skillOverrides": {
     "agents-sdk": "off",
     "cloudflare": "off",
