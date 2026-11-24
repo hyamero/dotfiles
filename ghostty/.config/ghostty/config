@@ -6,7 +6,7 @@ theme = Github Dark Colorblind
 # Needs full opacity — desktop blur showing through fights the nebula.
 custom-shader = shaders/galaxy.glsl
 custom-shader = shaders/caret.glsl
-custom-shader-animation = true
+custom-shader-animation = false
 
 font-family = VictorMono NFM
 font-size = 14
